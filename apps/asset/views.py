@@ -19,6 +19,27 @@ def _sync_tags(asset, tag_names):
     asset.tags.set([_get_or_create_tag(name) for name in tag_names])
 
 
+def _report_detection(request, form):
+    """Tell the user what the frame auto-detection found (if it ran)."""
+    grid = form.detected
+    if not grid:
+        return
+    frames = grid["cols"] * grid["rows"]
+    if frames > 1:
+        messages.info(
+            request,
+            f"Detected {grid['cols']}×{grid['rows']} frames "
+            f"({frames} total, {grid['frame_width']}×{grid['frame_height']}px each).",
+        )
+    else:
+        messages.warning(
+            request,
+            "Couldn't find separate frames in this image, so it is shown as a single "
+            "frame. If frames touch each other, edit the asset and enter the frame "
+            "size by hand under Advanced.",
+        )
+
+
 @login_required(login_url="login:login")
 def asset_list_view(request):
     assets = Asset.objects.filter(user=request.user).prefetch_related("tags")
@@ -61,6 +82,7 @@ def asset_upload_view(request):
             asset.save()
             _sync_tags(asset, form.cleaned_data["tags"])
             messages.success(request, "Asset uploaded.")
+            _report_detection(request, form)
             return redirect("asset:detail", pk=asset.pk)
     else:
         form = AssetForm()
@@ -99,6 +121,7 @@ def asset_edit_view(request, pk):
             form.save()
             _sync_tags(asset, form.cleaned_data["tags"])
             messages.success(request, "Asset updated.")
+            _report_detection(request, form)
             return redirect("asset:detail", pk=asset.pk)
     else:
         form = AssetForm(instance=asset)

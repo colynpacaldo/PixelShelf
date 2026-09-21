@@ -2,8 +2,10 @@ import os
 
 from django import forms
 from django.core.exceptions import ValidationError
+from PIL import Image
 
 from .models import Asset
+from .spritesheet import detect_frame_grid
 
 MAX_UPLOAD_SIZE_BYTES = 10 * 1024 * 1024  # 10MB, per the README's upload limit
 ALLOWED_EXTENSIONS = {".png", ".gif"}
@@ -18,21 +20,71 @@ class AssetForm(forms.ModelForm):
 
     class Meta:
         model = Asset
-        fields = ["title", "file_path", "frame_width", "frame_height", "license_type", "tags"]
-        labels = {"file_path": "Spritesheet (PNG or GIF, max 10MB)"}
+        fields = [
+            "title", "file_path", "is_spritesheet",
+            "frame_width", "frame_height", "license_type", "tags",
+        ]
+        labels = {
+            "file_path": "Image (PNG or GIF, max 10MB)",
+            "is_spritesheet": "This is an animated spritesheet",
+        }
         widgets = {
             "title": forms.TextInput(attrs={"placeholder": "e.g. Hero Walk Cycle"}),
-            "frame_width": forms.NumberInput(attrs={"min": 1}),
-            "frame_height": forms.NumberInput(attrs={"min": 1}),
+            "frame_width": forms.NumberInput(attrs={"min": 1, "placeholder": "auto"}),
+            "frame_height": forms.NumberInput(attrs={"min": 1, "placeholder": "auto"}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.detected = None  # filled in by clean() when the frame grid is auto-detected
         # On edit, the spritesheet is optional (keep the existing file unless replaced)
         # and the free-text tag field is pre-filled from the asset's current tags.
         if self.instance.pk:
             self.fields["file_path"].required = False
             self.initial["tags"] = ", ".join(self.instance.tags.values_list("name", flat=True))
+
+    def clean(self):
+        """Work out the frame size for spritesheets so the user never has to.
+
+        * Not a spritesheet  -> static sprite, no frame size at all.
+        * Sizes typed by the user (or kept unchanged on an edit) -> respected.
+        * Otherwise (blank sizes, or a replaced file whose old sizes no longer
+          apply) -> detected from the image; see spritesheet.detect_frame_grid.
+        """
+        cleaned = super().clean()
+        self.detected = None  # set to the detected grid so the view can tell the user
+
+        if not cleaned.get("is_spritesheet"):
+            cleaned["frame_width"] = None
+            cleaned["frame_height"] = None
+            return cleaned
+
+        width, height = cleaned.get("frame_width"), cleaned.get("frame_height")
+        upload = cleaned.get("file_path")
+        is_new_file = bool(upload) and hasattr(upload, "content_type")
+        typed_by_user = bool({"frame_width", "frame_height"} & set(self.changed_data))
+
+        if width and height and (typed_by_user or not is_new_file):
+            return cleaned  # manual override, or an unchanged edit
+
+        try:
+            if is_new_file:
+                grid = detect_frame_grid(upload)
+            elif self.instance.pk and self.instance.file_path:
+                with self.instance.file_path.open("rb") as fh:
+                    grid = detect_frame_grid(fh)
+            else:
+                return cleaned  # no usable file; file_path already reports its own error
+        except (OSError, ValueError, Image.DecompressionBombError):
+            raise ValidationError(
+                "Couldn't analyse this image automatically. "
+                "Please enter the frame width and height by hand."
+            )
+
+        cleaned["frame_width"] = grid["frame_width"]
+        cleaned["frame_height"] = grid["frame_height"]
+        self.detected = grid
+        return cleaned
 
     def clean_file_path(self):
         f = self.cleaned_data.get("file_path")

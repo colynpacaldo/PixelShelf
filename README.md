@@ -13,7 +13,7 @@ Student game developers and 2D artists often lose track of sprite files across s
 ## Features
 
 * **Asset Manager & Uploader:** Upload 2D image files (PNG/GIF) up to 10MB. Tag your assets with metadata such as frame size, author, category (characters, tilesets, UI), and license type.
-* **Interactive Sprite Animator:** A custom HTML5 Canvas widget where users can enter frame width/height to view a looping animation preview with play/pause controls.
+* **Interactive Sprite Animator:** Uploads are static sprites by default. Tick "This is an animated spritesheet" and the frame grid is detected automatically (with a manual frame-size override under Advanced) to view a looping animation preview with play/pause, frame-stepping and an fps control. The preview always scales to fit so the whole frame is visible.
 * **Background Contrast Tester:** Switch the canvas backdrop between light, dark, and transparent checkerboards to test sprite edge clarity and readability.
 * **Dashboard & Collections:** View recent uploads, total asset counts, and organize private asset libraries and project collections.
 * **User Profiles:** Showcase a portfolio of public assets and quick stats on uploaded spritesheets.

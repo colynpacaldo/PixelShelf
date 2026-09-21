@@ -55,7 +55,7 @@
                         </div>
                         <div class="asset-card-body">
                             <h3>{{ asset.title }}</h3>
-                            <p class="asset-meta">{{ asset.frame_width }}×{{ asset.frame_height }}px · {{ asset.file_size_kb }} KB</p>
+                            <p class="asset-meta">{{ asset.size_label }} · {{ asset.file_size_kb }} KB</p>
                             {% if asset.tags.all %}
                                 <div class="tag-row">
                                     {% for tag in asset.tags.all %}
@@ -72,7 +72,7 @@
                 {% if query or tag_filter %}
                     No assets match that search. <a href="{% url 'asset:list' %}">Clear filters</a>.
                 {% else %}
-                    No assets yet. <a href="{% url 'asset:upload' %}">Upload your first spritesheet</a>.
+                    No assets yet. <a href="{% url 'asset:upload' %}">Upload your first asset</a>.
                 {% endif %}
             </p>
         {% endif %}

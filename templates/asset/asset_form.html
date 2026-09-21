@@ -21,7 +21,7 @@
     </nav>
 
     <main class="content narrow">
-        <h1>{% if mode == "edit" %}Edit Asset{% else %}Upload a Spritesheet{% endif %}</h1>
+        <h1>{% if mode == "edit" %}Edit Asset{% else %}Upload an Asset{% endif %}</h1>
 
         <div class="form-card">
             <form method="post" enctype="multipart/form-data" novalidate>
@@ -37,24 +37,37 @@
 
                 <label for="{{ form.file_path.id_for_label }}">{{ form.fields.file_path.label }}</label>
                 {% if mode == "edit" and asset.file_path %}
-                    <img id="upload-preview" class="upload-preview" src="{{ asset.file_path.url }}" alt="Current spritesheet">
+                    <img id="upload-preview" class="upload-preview" src="{{ asset.file_path.url }}" alt="Current image">
                 {% else %}
                     <img id="upload-preview" class="upload-preview" src="" alt="" hidden>
                 {% endif %}
                 {{ form.file_path }}
                 {% for e in form.file_path.errors %}<p class="field-error">{{ e }}</p>{% endfor %}
 
-                <div class="field-row">
-                    <div>
-                        <label for="{{ form.frame_width.id_for_label }}">Frame width (px)</label>
-                        {{ form.frame_width }}
-                    </div>
-                    <div>
-                        <label for="{{ form.frame_height.id_for_label }}">Frame height (px)</label>
-                        {{ form.frame_height }}
-                    </div>
+                <label class="checkbox-row" for="{{ form.is_spritesheet.id_for_label }}">
+                    {{ form.is_spritesheet }}
+                    <span>{{ form.fields.is_spritesheet.label }}</span>
+                </label>
+                <p class="field-hint">Leave unticked for a single character or item. Tick it if the image is a grid of animation frames &mdash; the frame size is detected automatically.</p>
+
+                <div id="spritesheet-options"{% if not form.is_spritesheet.value %} hidden{% endif %}>
+                    <details class="advanced"{% if form.frame_width.errors or form.frame_height.errors or form.non_field_errors %} open{% endif %}>
+                        <summary>Advanced: set the frame size manually</summary>
+                        <div class="field-row">
+                            <div>
+                                <label for="{{ form.frame_width.id_for_label }}">Frame width (px)</label>
+                                {{ form.frame_width }}
+                                {% for e in form.frame_width.errors %}<p class="field-error">{{ e }}</p>{% endfor %}
+                            </div>
+                            <div>
+                                <label for="{{ form.frame_height.id_for_label }}">Frame height (px)</label>
+                                {{ form.frame_height }}
+                                {% for e in form.frame_height.errors %}<p class="field-error">{{ e }}</p>{% endfor %}
+                            </div>
+                        </div>
+                        <p class="field-hint">Leave both blank to auto-detect. Only fill these in if detection gets it wrong (for example when frames touch each other). If you replace the image, the size is detected again unless you change these numbers.</p>
+                    </details>
                 </div>
-                <p class="field-hint">The pixel size of a single animation frame in the sheet — used to slice it for the animator preview.</p>
 
                 <label for="{{ form.license_type.id_for_label }}">License</label>
                 {{ form.license_type }}

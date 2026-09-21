@@ -340,23 +340,21 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 260px;
+    /* Fixed height: asset.js sizes the canvas to fit inside this box, so the
+       whole frame is always visible no matter how big or small it is. */
+    height: 420px;
     border-radius: 8px;
-    padding: 1.5rem;
+    padding: 1rem;
     transition: background-color 0.15s ease;
     overflow: hidden;
 }
 
 .canvas-stage canvas {
+    /* Width/height are set by fitCanvas() in asset.js (whole-number zoom for
+       small sprites, smooth shrink for large ones). */
+    display: block;
+    flex: none;
     image-rendering: pixelated;
-    image-rendering: crisp-edges;
-    max-width: 100%;
-    max-height: 320px;
-    width: auto;
-    height: auto;
-    /* Scale small sprite frames up so they're actually visible. */
-    transform: scale(4);
-    transform-origin: center;
 }
 
 .bg-light { background-color: #ffffff; }
@@ -509,3 +507,43 @@ body {
     border-radius: 8px;
     font-size: 0.85rem;
 }
+
+/* --- Upload form: spritesheet toggle --- */
+/* Scoped to .form-card so it beats `.form-card label { display: block }`. */
+.form-card .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0.25rem 0 0.4rem;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.form-card .checkbox-row input[type="checkbox"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin: 0;
+    flex: none;
+    accent-color: #4f46e5;
+}
+
+.form-card .checkbox-row + .field-hint { margin: 0 0 1rem; }
+
+#spritesheet-options[hidden] { display: none; }
+
+.advanced {
+    margin: 0 0 1rem;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #f9fafb;
+}
+
+.advanced summary {
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #4b5563;
+}
+
+.advanced[open] summary { margin-bottom: 0.8rem; }

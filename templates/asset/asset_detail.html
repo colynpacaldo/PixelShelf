@@ -36,26 +36,31 @@
         </div>
 
         <div class="detail-grid">
-            <!-- Sprite Animator: the signature feature -->
+            <!-- Sprite viewer: static sprite by default, animator for spritesheets -->
             <div class="animator-panel">
                 <div id="canvas-stage" class="canvas-stage bg-light">
                     <canvas id="sprite-canvas"
                             data-src="{{ asset.file_path.url }}"
+                            {% if asset.is_animated %}
+                            data-animated="true"
                             data-frame-width="{{ asset.frame_width }}"
-                            data-frame-height="{{ asset.frame_height }}"></canvas>
+                            data-frame-height="{{ asset.frame_height }}"
+                            {% endif %}></canvas>
                 </div>
 
+                {% if asset.frame_count > 1 %}
                 <div class="animator-controls">
                     <button type="button" id="prev-frame-btn" class="ctrl-btn" title="Previous frame">⏮</button>
                     <button type="button" id="play-pause-btn" class="ctrl-btn primary">Pause</button>
                     <button type="button" id="next-frame-btn" class="ctrl-btn" title="Next frame">⏭</button>
-                    <span id="frame-label" class="frame-label">Frame 1 / 1</span>
+                    <span id="frame-label" class="frame-label">Frame 1 / {{ asset.frame_count }}</span>
 
                     <label class="fps-control">
                         <span id="fps-value">8 fps</span>
                         <input type="range" id="fps-slider" min="1" max="24" value="8">
                     </label>
                 </div>
+                {% endif %}
 
                 <div class="bg-switcher">
                     <span class="bg-switcher-label">Background:</span>
@@ -68,8 +73,11 @@
             <!-- Metadata & organization -->
             <div class="meta-panel">
                 <dl class="meta-list">
+                    <dt>Type</dt>
+                    <dd>{% if asset.is_animated %}Animated spritesheet{% else %}Static sprite{% endif %}</dd>
+
                     <dt>Dimensions</dt>
-                    <dd>{{ asset.frame_width }} × {{ asset.frame_height }} px per frame</dd>
+                    <dd>{% if asset.is_animated %}{{ asset.frame_width }} × {{ asset.frame_height }} px per frame &middot; {{ asset.frame_count }} frame{{ asset.frame_count|pluralize }}{% else %}{{ asset.file_path.width }} × {{ asset.file_path.height }} px{% endif %}</dd>
 
                     <dt>File size</dt>
                     <dd>{{ asset.file_size_kb }} KB</dd>

@@ -1,7 +1,22 @@
 document.addEventListener("DOMContentLoaded", function () {
     initUploadPreview();
+    initSpritesheetToggle();
     initSpriteAnimator();
 });
+
+/**
+ * Upload/edit form: the frame-size options only make sense for animated
+ * spritesheets, so reveal them only while that box is ticked.
+ */
+function initSpritesheetToggle() {
+    const checkbox = document.getElementById("id_is_spritesheet");
+    const options = document.getElementById("spritesheet-options");
+    if (!checkbox || !options) return;
+
+    function sync() { options.hidden = !checkbox.checked; }
+    checkbox.addEventListener("change", sync);
+    sync();
+}
 
 /**
  * Live-preview whichever spritesheet the user just picked in the
@@ -21,20 +36,25 @@ function initUploadPreview() {
 }
 
 /**
- * The sprite animator: slices an uploaded spritesheet into
- * frame_width x frame_height tiles and loops through them on a
- * <canvas>, with play/pause, frame-stepping, an fps control, and a
- * background switcher for checking sprite edges against light/dark/
- * transparent backdrops.
+ * The sprite viewer.
+ *
+ * - Static sprite (default): shows the whole image, scaled to fit the stage.
+ * - Animated spritesheet: slices the sheet into frame_width x frame_height
+ *   tiles and loops through them on a <canvas>, with play/pause,
+ *   frame-stepping and an fps control.
+ *
+ * Either way the canvas is scaled so the WHOLE frame is visible, using the
+ * largest whole-number zoom that fits (keeps pixel art crisp), and it re-fits
+ * when the window is resized. A background switcher lets you check sprite
+ * edges against light / dark / transparent backdrops.
  */
 function initSpriteAnimator() {
     const canvas = document.getElementById("sprite-canvas");
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
-    const frameWidth = parseInt(canvas.dataset.frameWidth, 10) || 32;
-    const frameHeight = parseInt(canvas.dataset.frameHeight, 10) || 32;
     const src = canvas.dataset.src;
+    const isAnimated = canvas.dataset.animated === "true";
 
     const stage = document.getElementById("canvas-stage");
     const playPauseBtn = document.getElementById("play-pause-btn");
@@ -45,6 +65,8 @@ function initSpriteAnimator() {
     const frameLabel = document.getElementById("frame-label");
     const bgButtons = document.querySelectorAll(".bg-swatch");
 
+    let frameWidth = 0;
+    let frameHeight = 0;
     let columns = 1;
     let rows = 1;
     let totalFrames = 1;
@@ -57,13 +79,26 @@ function initSpriteAnimator() {
     const image = new Image();
 
     image.onload = function () {
-        columns = Math.max(1, Math.floor(image.naturalWidth / frameWidth));
-        rows = Math.max(1, Math.floor(image.naturalHeight / frameHeight));
-        totalFrames = Math.max(1, columns * rows);
+        const naturalW = image.naturalWidth;
+        const naturalH = image.naturalHeight;
+
+        if (isAnimated) {
+            // Never let a frame be bigger than the image itself.
+            frameWidth = Math.min(parseInt(canvas.dataset.frameWidth, 10) || naturalW, naturalW);
+            frameHeight = Math.min(parseInt(canvas.dataset.frameHeight, 10) || naturalH, naturalH);
+        } else {
+            frameWidth = naturalW;
+            frameHeight = naturalH;
+        }
+
+        columns = Math.max(1, Math.floor(naturalW / frameWidth));
+        rows = Math.max(1, Math.floor(naturalH / frameHeight));
+        totalFrames = isAnimated ? Math.max(1, columns * rows) : 1;
 
         canvas.width = frameWidth;
         canvas.height = frameHeight;
 
+        fitCanvas();
         drawFrame(0);
         updateFrameLabel();
         play();
@@ -76,6 +111,27 @@ function initSpriteAnimator() {
     };
 
     image.src = src;
+
+    /**
+     * Size the canvas so the whole frame fits inside the stage. Zooms in by
+     * whole numbers when the frame is small (crisp pixels) and scales down
+     * smoothly when the frame is bigger than the stage.
+     */
+    function fitCanvas() {
+        if (!stage || !frameWidth || !frameHeight) return;
+        const css = getComputedStyle(stage);
+        const availW = stage.clientWidth - parseFloat(css.paddingLeft) - parseFloat(css.paddingRight);
+        const availH = stage.clientHeight - parseFloat(css.paddingTop) - parseFloat(css.paddingBottom);
+
+        let scale = Math.min(availW / frameWidth, availH / frameHeight);
+        scale = scale >= 1 ? Math.min(Math.floor(scale), 32) : Math.max(scale, 0.05);
+
+        canvas.style.width = Math.round(frameWidth * scale) + "px";
+        canvas.style.height = Math.round(frameHeight * scale) + "px";
+        canvas.style.imageRendering = scale >= 1 ? "pixelated" : "auto";
+    }
+
+    window.addEventListener("resize", fitCanvas);
 
     function drawFrame(index) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);

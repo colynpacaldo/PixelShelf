@@ -25,11 +25,17 @@ class Asset(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="assets")
     title = models.CharField(max_length=255)
     file_path = models.ImageField(upload_to=asset_upload_path)
+    is_spritesheet = models.BooleanField(
+        default=False,
+        help_text="Tick if this image is a sheet of animation frames rather than a single sprite.",
+    )
+    # Only meaningful for spritesheets. Detected automatically on upload
+    # (see spritesheet.py); the user can still override them by hand.
     frame_width = models.PositiveIntegerField(
-        default=32, help_text="Width of a single animation frame, in pixels."
+        null=True, blank=True, help_text="Width of a single animation frame, in pixels."
     )
     frame_height = models.PositiveIntegerField(
-        default=32, help_text="Height of a single animation frame, in pixels."
+        null=True, blank=True, help_text="Height of a single animation frame, in pixels."
     )
     license_type = models.CharField(
         max_length=50, choices=LICENSE_CHOICES, default="all-rights-reserved"
@@ -56,6 +62,35 @@ class Asset(models.Model):
     @property
     def filename(self):
         return os.path.basename(self.file_path.name) if self.file_path else ""
+
+    @property
+    def is_animated(self):
+        """True when this is a spritesheet with a usable frame size."""
+        return bool(self.is_spritesheet and self.frame_width and self.frame_height)
+
+    @property
+    def frame_count(self):
+        """How many frames the animator will cut out of the sheet (1 if static)."""
+        if not self.is_animated:
+            return 1
+        try:
+            cols = max(1, self.file_path.width // self.frame_width)
+            rows = max(1, self.file_path.height // self.frame_height)
+        except (OSError, ValueError):
+            return 1
+        return cols * rows
+
+    @property
+    def size_label(self):
+        """Short human label for cards: frame size for sheets, image size otherwise."""
+        try:
+            if self.is_animated:
+                label = f"{self.frame_width}×{self.frame_height}px"
+                frames = self.frame_count
+                return f"{label} · {frames} frames" if frames > 1 else label
+            return f"{self.file_path.width}×{self.file_path.height}px"
+        except (OSError, ValueError):
+            return ""
 
 
 class AssetTag(models.Model):
