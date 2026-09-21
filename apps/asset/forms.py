@@ -29,8 +29,8 @@ class AssetForm(forms.ModelForm):
             'is_spritesheet',
             'frame_width',
             'frame_height',
+            'license',
         ]
-        # Hide the inputs from the UI so auto-detection still runs smoothly behind the scenes
         widgets = {
             'frame_width': forms.HiddenInput(),
             'frame_height': forms.HiddenInput(),
