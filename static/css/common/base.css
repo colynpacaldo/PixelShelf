@@ -1,0 +1,133 @@
+/* ---------------------------------------------------------------------
+   Shared base styles, loaded on every page before the page-specific
+   stylesheet. Two jobs:
+   1. A safety net so nothing overflows a narrow viewport by default.
+   2. A responsive version of the topbar nav (hamburger menu below
+      768px) shared by every template, so it only has to be built once.
+   ------------------------------------------------------------------- */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+img, svg, canvas, video {
+    max-width: 100%;
+}
+
+/* Any wide content (tables, code, long stats) scrolls inside itself
+   instead of pushing the page wider than the viewport. */
+.scroll-x {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* --- Responsive topbar / nav -----------------------------------------
+   Desktop: unchanged from the existing per-page .topbar rules (brand
+   left, links row right). Below 768px the links collapse into a
+   slide-down panel toggled by a hamburger button.
+   ---------------------------------------------------------------------
+*/
+.topbar {
+    position: relative;
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
+}
+
+.nav-toggle {
+    display: none;
+    width: 40px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.nav-toggle span,
+.nav-toggle span::before,
+.nav-toggle span::after {
+    content: "";
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    height: 2px;
+    background: #e5e7eb;
+    border-radius: 2px;
+    transition: transform 0.2s ease, opacity 0.2s ease, top 0.2s ease;
+}
+
+.nav-toggle span { top: 17px; }
+.nav-toggle span::before { top: -8px; }
+.nav-toggle span::after { top: 8px; }
+
+.nav-toggle[aria-expanded="true"] span { background: transparent; }
+.nav-toggle[aria-expanded="true"] span::before { top: 0; transform: rotate(45deg); }
+.nav-toggle[aria-expanded="true"] span::after { top: 0; transform: rotate(-45deg); }
+
+@media (max-width: 768px) {
+    .nav-toggle {
+        display: block;
+    }
+
+    .nav-links {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        max-height: 0;
+        overflow: hidden;
+        gap: 0;
+        transition: max-height 0.25s ease;
+    }
+
+    .nav-links.open {
+        max-height: 400px;
+    }
+
+    .nav-links a {
+        padding: 0.75rem 0.25rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+}
+
+/* --- General small-screen spacing/wrapping for common patterns ------- */
+@media (max-width: 640px) {
+    .topbar {
+        padding: 0.85rem 1.1rem;
+    }
+
+    .content {
+        margin: 1.5rem auto;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .header-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .field-row {
+        grid-template-columns: 1fr;
+    }
+
+    .confirm-actions {
+        flex-direction: column;
+    }
+}
