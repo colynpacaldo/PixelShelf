@@ -8,7 +8,7 @@ from .models import Asset
 from .spritesheet import detect_frame_grid
 
 MAX_UPLOAD_SIZE_BYTES = 10 * 1024 * 1024  # 10MB, per the README's upload limit
-ALLOWED_EXTENSIONS = {".png", ".gif"}
+ALLOWED_EXTENSIONS = {".png", ".gif", ".jpg", ".jpeg"}
 
 
 class AssetForm(forms.ModelForm):
