@@ -79,7 +79,7 @@ body.dark-mode .danger-btn-inline {
 
 body.dark-mode .asset-thumb,
 body.dark-mode .shelf-card-thumbs {
-    background-color: #0b1120;
+    background-color: #111827;
 }
 
 body.dark-mode .info {
@@ -258,14 +258,7 @@ body.dark-mode .info {
 
 .asset-thumb {
     aspect-ratio: 1 / 1;
-    background:
-        linear-gradient(45deg, #f1f5f9 25%, transparent 25%),
-        linear-gradient(-45deg, #f1f5f9 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, #f1f5f9 75%),
-        linear-gradient(-45deg, transparent 75%, #f1f5f9 75%);
-    background-size: 16px 16px;
-    background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
-    background-color: #fff;
+    background: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -370,13 +363,26 @@ body.dark-mode .info {
     border-radius: 8px;
     padding: 0.4rem;
     margin-bottom: 0.75rem;
-    background:
-        linear-gradient(45deg, #f1f5f9 25%, transparent 25%),
-        linear-gradient(-45deg, #f1f5f9 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, #f1f5f9 75%),
-        linear-gradient(-45deg, transparent 75%, #f1f5f9 75%);
-    background-size: 16px 16px;
-    background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+    background: #fff;
+}
+
+body.dark-mode .upload-preview {
+    background: #111827;
+    border-color: #334155;
+}
+
+.confirm-thumb {
+    display: block;
+    max-width: 140px;
+    max-height: 140px;
+    object-fit: contain;
+    margin: 0.5rem 0 1rem;
+    background: #fff;
+    border-radius: 8px;
+}
+
+body.dark-mode .confirm-thumb {
+    background: #111827;
 }
 
 .upload-preview[hidden] { display: none; }

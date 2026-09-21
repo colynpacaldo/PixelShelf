@@ -247,14 +247,11 @@ body.dark-mode .info {
     width: 100%;
     aspect-ratio: 1 / 1;
     object-fit: contain;
-    background:
-        linear-gradient(45deg, #f1f5f9 25%, transparent 25%),
-        linear-gradient(-45deg, #f1f5f9 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, #f1f5f9 75%),
-        linear-gradient(-45deg, transparent 75%, #f1f5f9 75%);
-    background-size: 16px 16px;
-    background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
-    background-color: #fff;
+    background: #fff;
+}
+
+body.dark-mode .asset-tile img {
+    background: #111827;
 }
 
 .asset-tile-title {
