@@ -160,6 +160,7 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 SUPABASE_S3_KEY = os.environ.get("SUPABASE_STORAGE_ACCESS_KEY")
+SUPABASE_PROJECT_REF = os.environ.get("SUPABASE_PROJECT_REF")
 
 if SUPABASE_S3_KEY:
     STORAGES = {
@@ -169,10 +170,11 @@ if SUPABASE_S3_KEY:
                 "access_key": SUPABASE_S3_KEY,
                 "secret_key": os.environ.get("SUPABASE_STORAGE_SECRET_KEY"),
                 "bucket_name": "assets",
-                "endpoint_url": f"https://{os.environ.get('SUPABASE_PROJECT_REF')}.supabase.co/storage/v1/s3",
+                "endpoint_url": f"https://{SUPABASE_PROJECT_REF}.supabase.co/storage/v1/s3",
                 "region_name": "ap-southeast-1",
                 "default_acl": "public-read",
                 "querystring_auth": False,
+                "custom_domain": f"{SUPABASE_PROJECT_REF}.supabase.co/storage/v1/object/public/assets",
             },
         },
         "staticfiles": {
