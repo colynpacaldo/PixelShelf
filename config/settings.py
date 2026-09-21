@@ -159,15 +159,37 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# Enable WhiteNoise's compressed caching for static assets
-STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
+SUPABASE_S3_KEY = os.environ.get("SUPABASE_STORAGE_ACCESS_KEY")
+
+if SUPABASE_S3_KEY:
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+            "OPTIONS": {
+                "access_key": SUPABASE_S3_KEY,
+                "secret_key": os.environ.get("SUPABASE_STORAGE_SECRET_KEY"),
+                "bucket_name": "assets",
+                "endpoint_url": f"https://{os.environ.get('SUPABASE_PROJECT_REF')}.supabase.co/storage/v1/s3",
+                "region_name": "ap-southeast-1",
+                "default_acl": "public-read",
+                "querystring_auth": False,
+            },
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+else:
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+    MEDIA_URL = "/media/"
+    MEDIA_ROOT = BASE_DIR / "media"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
