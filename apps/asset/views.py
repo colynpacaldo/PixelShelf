@@ -9,6 +9,41 @@ from apps.tag.models import Tag
 from .forms import AssetForm
 from .models import Asset
 
+from apps.tag.models import Tag
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Asset
+from .forms import AssetForm
+from apps.tag.models import Tag
+
+def asset_edit_view(request, pk):
+    asset = get_object_or_404(Asset, pk=pk, user=request.user)
+
+    if request.method == 'POST':
+        form = AssetForm(request.POST, request.FILES, instance=asset)
+        if form.is_valid():
+            # 1. Save standard fields without committing M2M yet
+            asset = form.save(commit=False)
+            asset.save()
+
+            # 2. Parse comma-separated string tags
+            raw_tags = form.cleaned_data.get('tags', '')
+            tag_names = [t.strip().lower() for t in raw_tags.split(',') if t.strip()]
+
+            # 3. Retrieve or create actual Tag database objects
+            tag_objects = []
+            for name in tag_names:
+                tag_obj, _ = Tag.objects.get_or_create(name=name)
+                tag_objects.append(tag_obj)
+
+            # 4. Set the related Tag instances
+            asset.tags.set(tag_objects)
+
+            return redirect('asset_detail', pk=asset.pk)
+    else:
+        form = AssetForm(instance=asset)
+
+    return render(request, 'asset/asset_form.html', {'form': form, 'asset': asset})
 
 def _get_or_create_tag(name):
     tag = Tag.objects.filter(name__iexact=name).first()

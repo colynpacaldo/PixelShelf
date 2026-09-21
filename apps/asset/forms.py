@@ -14,34 +14,27 @@ ALLOWED_EXTENSIONS = {".png", ".gif", ".jpg", ".jpeg"}
 class AssetForm(forms.ModelForm):
     tags = forms.CharField(
         required=False,
-        widget=forms.TextInput(attrs={"placeholder": "characters, tileset, ui"}),
-        help_text="Comma-separated tags.",
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Enter tags separated by commas (e.g. cat, hero, npc)',
+            'class': 'input'
+        }),
+        help_text="Separate tags with commas"
     )
 
     class Meta:
         model = Asset
         fields = [
-            "title", "file_path", "is_spritesheet",
-            "frame_width", "frame_height", "license_type", "tags",
+            'title',
+            'file_path',
+            'is_spritesheet',
         ]
-        labels = {
-            "file_path": "Image (PNG or GIF, max 10MB)",
-            "is_spritesheet": "This is an animated spritesheet",
-        }
-        widgets = {
-            "title": forms.TextInput(attrs={"placeholder": "e.g. Hero Walk Cycle"}),
-            "frame_width": forms.NumberInput(attrs={"min": 1, "placeholder": "auto"}),
-            "frame_height": forms.NumberInput(attrs={"min": 1, "placeholder": "auto"}),
-        }
+        
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.detected = None  # filled in by clean() when the frame grid is auto-detected
-        # On edit, the spritesheet is optional (keep the existing file unless replaced)
-        # and the free-text tag field is pre-filled from the asset's current tags.
-        if self.instance.pk:
-            self.fields["file_path"].required = False
-            self.initial["tags"] = ", ".join(self.instance.tags.values_list("name", flat=True))
+        if self.instance and self.instance.pk:
+            # Pre-populate the tags field with comma-separated names when editing
+            self.fields['tags'].initial = ", ".join(t.name for t in self.instance.tags.all())
 
     def clean(self):
         """Work out the frame size for spritesheets so the user never has to.
