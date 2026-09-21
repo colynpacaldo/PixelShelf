@@ -27,7 +27,14 @@ class AssetForm(forms.ModelForm):
             'title',
             'file_path',
             'is_spritesheet',
+            'frame_width',
+            'frame_height',
         ]
+        # Hide the inputs from the UI so auto-detection still runs smoothly behind the scenes
+        widgets = {
+            'frame_width': forms.HiddenInput(),
+            'frame_height': forms.HiddenInput(),
+        }
         
 
     def __init__(self, *args, **kwargs):

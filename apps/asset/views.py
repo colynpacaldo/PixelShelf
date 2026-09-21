@@ -16,35 +16,6 @@ from .models import Asset
 from .forms import AssetForm
 from apps.tag.models import Tag
 
-def asset_edit_view(request, pk):
-    asset = get_object_or_404(Asset, pk=pk, user=request.user)
-
-    if request.method == 'POST':
-        form = AssetForm(request.POST, request.FILES, instance=asset)
-        if form.is_valid():
-            # 1. Save standard fields without committing M2M yet
-            asset = form.save(commit=False)
-            asset.save()
-
-            # 2. Parse comma-separated string tags
-            raw_tags = form.cleaned_data.get('tags', '')
-            tag_names = [t.strip().lower() for t in raw_tags.split(',') if t.strip()]
-
-            # 3. Retrieve or create actual Tag database objects
-            tag_objects = []
-            for name in tag_names:
-                tag_obj, _ = Tag.objects.get_or_create(name=name)
-                tag_objects.append(tag_obj)
-
-            # 4. Set the related Tag instances
-            asset.tags.set(tag_objects)
-
-            return redirect('asset_detail', pk=asset.pk)
-    else:
-        form = AssetForm(instance=asset)
-
-    return render(request, 'asset/asset_form.html', {'form': form, 'asset': asset})
-
 def _get_or_create_tag(name):
     tag = Tag.objects.filter(name__iexact=name).first()
     return tag or Tag.objects.create(name=name)
@@ -114,6 +85,10 @@ def asset_upload_view(request):
         if form.is_valid():
             asset = form.save(commit=False)
             asset.user = request.user
+            if form.cleaned_data.get("frame_width"):
+                asset.frame_width = form.cleaned_data["frame_width"]
+            if form.cleaned_data.get("frame_height"):
+                asset.frame_height = form.cleaned_data["frame_height"]
             asset.save()
             _sync_tags(asset, form.cleaned_data["tags"])
             messages.success(request, "Asset uploaded.")
@@ -153,7 +128,12 @@ def asset_edit_view(request, pk):
     if request.method == "POST":
         form = AssetForm(request.POST, request.FILES, instance=asset)
         if form.is_valid():
-            form.save()
+            asset = form.save(commit=False)
+            if form.cleaned_data.get("frame_width"):
+                asset.frame_width = form.cleaned_data["frame_width"]
+            if form.cleaned_data.get("frame_height"):
+                asset.frame_height = form.cleaned_data["frame_height"]
+            asset.save()
             _sync_tags(asset, form.cleaned_data["tags"])
             messages.success(request, "Asset updated.")
             _report_detection(request, form)
