@@ -17,6 +17,8 @@ body {
 .brand {
     font-weight: 700;
     font-size: 1.1rem;
+    color: #fff;
+    text-decoration: none;
 }
 
 .nav-links a {

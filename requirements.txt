@@ -3,3 +3,5 @@ psycopg[binary]>=3.1
 dj-database-url>=2.1
 python-dotenv>=1.0
 Pillow>=10.0
+# Pillow was already required (used by USER_PROFILE.profile_image);
+# it also backs the new ASSET.file_path ImageField below.

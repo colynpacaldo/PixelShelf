@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ asset.title }} · PixelShelf</title>
+    <link rel="stylesheet" href="{% static 'css/asset/asset.css' %}">
+</head>
+<body>
+    <nav class="topbar">
+        <a class="brand" href="{% url 'home:home' %}">🎮 PixelShelf</a>
+        <div class="nav-links">
+            <a href="{% url 'home:home' %}">Home</a>
+            <a href="{% url 'asset:list' %}" class="active">Assets</a>
+            <a href="{% url 'shelf:list' %}">Shelves</a>
+            <a href="{% url 'profile:profile' %}">Profile</a>
+            <a href="{% url 'user_settings:settings' %}">Settings</a>
+            <a href="{% url 'login:logout' %}">Logout</a>
+        </div>
+    </nav>
+
+    <main class="content wide">
+        {% if messages %}
+            {% for message in messages %}
+                <p class="info">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <div class="page-header">
+            <h1>{{ asset.title }}</h1>
+            <div class="header-actions">
+                <a href="{% url 'asset:edit' asset.pk %}" class="secondary-btn-inline">Edit</a>
+                <a href="{% url 'asset:delete' asset.pk %}" class="danger-btn-inline">Delete</a>
+            </div>
+        </div>
+
+        <div class="detail-grid">
+            <!-- Sprite Animator: the signature feature -->
+            <div class="animator-panel">
+                <div id="canvas-stage" class="canvas-stage bg-light">
+                    <canvas id="sprite-canvas"
+                            data-src="{{ asset.file_path.url }}"
+                            data-frame-width="{{ asset.frame_width }}"
+                            data-frame-height="{{ asset.frame_height }}"></canvas>
+                </div>
+
+                <div class="animator-controls">
+                    <button type="button" id="prev-frame-btn" class="ctrl-btn" title="Previous frame">⏮</button>
+                    <button type="button" id="play-pause-btn" class="ctrl-btn primary">Pause</button>
+                    <button type="button" id="next-frame-btn" class="ctrl-btn" title="Next frame">⏭</button>
+                    <span id="frame-label" class="frame-label">Frame 1 / 1</span>
+
+                    <label class="fps-control">
+                        <span id="fps-value">8 fps</span>
+                        <input type="range" id="fps-slider" min="1" max="24" value="8">
+                    </label>
+                </div>
+
+                <div class="bg-switcher">
+                    <span class="bg-switcher-label">Background:</span>
+                    <button type="button" class="bg-swatch bg-swatch-light active" data-bg="light" title="Light">Light</button>
+                    <button type="button" class="bg-swatch bg-swatch-dark" data-bg="dark" title="Dark">Dark</button>
+                    <button type="button" class="bg-swatch bg-swatch-transparent" data-bg="transparent" title="Transparent">Transparent</button>
+                </div>
+            </div>
+
+            <!-- Metadata & organization -->
+            <div class="meta-panel">
+                <dl class="meta-list">
+                    <dt>Dimensions</dt>
+                    <dd>{{ asset.frame_width }} × {{ asset.frame_height }} px per frame</dd>
+
+                    <dt>File size</dt>
+                    <dd>{{ asset.file_size_kb }} KB</dd>
+
+                    <dt>License</dt>
+                    <dd>{{ asset.get_license_type_display }}</dd>
+
+                    <dt>Uploaded</dt>
+                    <dd>{{ asset.uploaded_at|date:"M j, Y" }}</dd>
+                </dl>
+
+                {% if asset.tags.all %}
+                    <div class="tag-row">
+                        {% for tag in asset.tags.all %}
+                            <span class="tag-chip">{{ tag.name }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <hr>
+
+                <h3>Shelves</h3>
+                {% if shelves_containing %}
+                    <ul class="shelf-mini-list">
+                        {% for shelf in shelves_containing %}
+                            <li><a href="{% url 'shelf:detail' shelf.pk %}">{{ shelf.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="empty-hint">Not on any shelf yet.</p>
+                {% endif %}
+
+                {% if user_shelves %}
+                    <form method="post" class="add-to-shelf-form">
+                        {% csrf_token %}
+                        <select name="shelf_id">
+                            {% for shelf in user_shelves %}
+                                <option value="{{ shelf.pk }}">{{ shelf.title }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="secondary-btn-inline">Add to shelf</button>
+                    </form>
+                {% elif not shelves_containing %}
+                    <p class="empty-hint"><a href="{% url 'shelf:create' %}">Create a shelf</a> to organize this asset.</p>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+
+    <script src="{% static 'js/asset/asset.js' %}"></script>
+</body>
+</html>

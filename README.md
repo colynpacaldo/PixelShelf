@@ -21,9 +21,9 @@ Student game developers and 2D artists often lose track of sprite files across s
 
 ## Tech Stack
 
-* **Backend:** Python, Flask
-* **Database:** SQLite 
-* **Frontend:** HTML, CSS, JavaScript (HTML5 Canvas API for the Sprite Animator)
+* **Backend:** Python, Django
+* **Database:** SQLite by default, with optional Supabase PostgreSQL
+* **Frontend:** HTML, CSS, vanilla JavaScript (HTML5 Canvas API for the Sprite Animator)
 
 ## Project Limitations
 
@@ -48,6 +48,9 @@ match the CSIT327 "Django Vertical Slicing + Supabase" guide.
 | Home | `apps/home` | Main authenticated dashboard |
 | Profile | `apps/profile` | Profile model, view/edit profile |
 | Settings | `apps/user_settings` | Preferences model, view/edit settings |
+| Tag | `apps/tag` | Tag model, shared across assets |
+| Asset | `apps/asset` | Asset model, upload/list/detail (sprite animator)/edit/delete |
+| Shelf | `apps/shelf` | Shelf model, create/list/detail/edit/delete, add/remove assets |
 
 Each feature owns its own `templates/<feature>/`, and
 `static/css|js|images/<feature>/` folders, plus its own `urls.py`,
@@ -88,6 +91,8 @@ Visit:
 - `/` (Home) after logging in
 - `/profile/` to view/edit your profile
 - `/settings/` to view/edit your preferences
+- `/assets/` to browse, upload, and preview your spritesheets (with the animator)
+- `/shelves/` to create collections and organize your assets
 - `/admin/` for the Django admin
 
 ## Notes
@@ -96,5 +101,5 @@ Visit:
   set, so the project runs immediately without Supabase for local
   development. Set `DATABASE_URL` to point Django at Supabase PostgreSQL.
 - Never commit `.env` — it's already in `.gitignore`.
-- Profile images are stored under `media/profile/` (served by Django only
-  while `DEBUG=True`).
+- Profile images are stored under `media/profile/`, and uploaded assets under
+  `media/assets/<user_id>/` (both served by Django only while `DEBUG=True`).

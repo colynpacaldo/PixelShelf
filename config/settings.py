@@ -55,6 +55,9 @@ INSTALLED_APPS = [
     "apps.home",
     "apps.profile",
     "apps.user_settings",
+    "apps.tag",
+    "apps.asset",
+    "apps.shelf",
 ]
 
 MIDDLEWARE = [

@@ -4,14 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>PixelShelf</title>
     <link rel="stylesheet" href="{% static 'css/home/home.css' %}">
 </head>
 <body>
     <nav class="topbar">
-        <span class="brand">Vertical Slice App</span>
+        <a class="brand" href="{% url 'home:home' %}">🎮 PixelShelf</a>
         <div class="nav-links">
             <a href="{% url 'home:home' %}">Home</a>
+            <a href="{% url 'asset:list' %}">Assets</a>
+            <a href="{% url 'shelf:list' %}">Shelves</a>
             <a href="{% url 'profile:profile' %}">Profile</a>
             <a href="{% url 'user_settings:settings' %}">Settings</a>
             <a href="{% url 'login:logout' %}">Logout</a>
@@ -19,8 +21,68 @@
     </nav>
 
     <main class="content">
-        <h1>Welcome to Home, {{ request.user.username }}</h1>
-        <p>You are logged in.</p>
+        {% if messages %}
+            {% for message in messages %}
+                <p class="info">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <h1>Welcome back, {{ request.user.username }}</h1>
+        <p class="tagline">Here's what's on your shelves.</p>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <span class="stat-number">{{ asset_count }}</span>
+                <span class="stat-label">Asset{{ asset_count|pluralize }}</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ shelf_count }}</span>
+                <span class="stat-label">Shelf{{ shelf_count|pluralize:"ves" }}</span>
+            </div>
+        </div>
+
+        <div class="dashboard-actions">
+            <a href="{% url 'asset:upload' %}" class="primary-btn-inline">+ Upload Asset</a>
+            <a href="{% url 'shelf:create' %}" class="secondary-btn-inline">+ New Shelf</a>
+        </div>
+
+        <section class="dashboard-section">
+            <div class="section-header">
+                <h2>Recent Uploads</h2>
+                <a class="see-all" href="{% url 'asset:list' %}">See all</a>
+            </div>
+            {% if recent_assets %}
+                <div class="asset-grid compact">
+                    {% for asset in recent_assets %}
+                        <a class="asset-tile" href="{% url 'asset:detail' asset.pk %}">
+                            <img src="{{ asset.file_path.url }}" alt="{{ asset.title }}">
+                            <span class="asset-tile-title">{{ asset.title }}</span>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="empty-hint">No assets yet. <a href="{% url 'asset:upload' %}">Upload your first spritesheet</a>.</p>
+            {% endif %}
+        </section>
+
+        <section class="dashboard-section">
+            <div class="section-header">
+                <h2>Recent Shelves</h2>
+                <a class="see-all" href="{% url 'shelf:list' %}">See all</a>
+            </div>
+            {% if recent_shelves %}
+                <div class="shelf-grid compact">
+                    {% for shelf in recent_shelves %}
+                        <a class="shelf-tile" href="{% url 'shelf:detail' shelf.pk %}">
+                            <h3>{{ shelf.title }}</h3>
+                            <span>{{ shelf.assets.count }} asset{{ shelf.assets.count|pluralize }}</span>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="empty-hint">No shelves yet. <a href="{% url 'shelf:create' %}">Create your first shelf</a>.</p>
+            {% endif %}
+        </section>
     </main>
 
     <script src="{% static 'js/home/home.js' %}"></script>

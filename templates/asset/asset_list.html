@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assets · PixelShelf</title>
+    <link rel="stylesheet" href="{% static 'css/asset/asset.css' %}">
+</head>
+<body>
+    <nav class="topbar">
+        <a class="brand" href="{% url 'home:home' %}">🎮 PixelShelf</a>
+        <div class="nav-links">
+            <a href="{% url 'home:home' %}">Home</a>
+            <a href="{% url 'asset:list' %}" class="active">Assets</a>
+            <a href="{% url 'shelf:list' %}">Shelves</a>
+            <a href="{% url 'profile:profile' %}">Profile</a>
+            <a href="{% url 'user_settings:settings' %}">Settings</a>
+            <a href="{% url 'login:logout' %}">Logout</a>
+        </div>
+    </nav>
+
+    <main class="content">
+        {% if messages %}
+            {% for message in messages %}
+                <p class="info">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <div class="page-header">
+            <h1>Your Assets</h1>
+            <a href="{% url 'asset:upload' %}" class="primary-btn-inline">+ Upload Asset</a>
+        </div>
+
+        <form method="get" class="filter-bar">
+            <input type="text" name="q" placeholder="Search by title or tag" value="{{ query }}">
+            <select name="tag" onchange="this.form.submit()">
+                <option value="">All tags</option>
+                {% for tag in all_tags %}
+                    <option value="{{ tag.name }}" {% if tag.name == tag_filter %}selected{% endif %}>{{ tag.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="secondary-btn-inline">Filter</button>
+            {% if query or tag_filter %}
+                <a class="clear-link" href="{% url 'asset:list' %}">Clear</a>
+            {% endif %}
+        </form>
+
+        {% if assets %}
+            <div class="asset-grid">
+                {% for asset in assets %}
+                    <a class="asset-card" href="{% url 'asset:detail' asset.pk %}">
+                        <div class="asset-thumb">
+                            <img src="{{ asset.file_path.url }}" alt="{{ asset.title }}">
+                        </div>
+                        <div class="asset-card-body">
+                            <h3>{{ asset.title }}</h3>
+                            <p class="asset-meta">{{ asset.frame_width }}×{{ asset.frame_height }}px · {{ asset.file_size_kb }} KB</p>
+                            {% if asset.tags.all %}
+                                <div class="tag-row">
+                                    {% for tag in asset.tags.all %}
+                                        <span class="tag-chip">{{ tag.name }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-hint">
+                {% if query or tag_filter %}
+                    No assets match that search. <a href="{% url 'asset:list' %}">Clear filters</a>.
+                {% else %}
+                    No assets yet. <a href="{% url 'asset:upload' %}">Upload your first spritesheet</a>.
+                {% endif %}
+            </p>
+        {% endif %}
+    </main>
+</body>
+</html>

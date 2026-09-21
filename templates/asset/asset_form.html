@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if mode == "edit" %}Edit Asset{% else %}Upload Asset{% endif %} · PixelShelf</title>
+    <link rel="stylesheet" href="{% static 'css/asset/asset.css' %}">
+</head>
+<body>
+    <nav class="topbar">
+        <a class="brand" href="{% url 'home:home' %}">🎮 PixelShelf</a>
+        <div class="nav-links">
+            <a href="{% url 'home:home' %}">Home</a>
+            <a href="{% url 'asset:list' %}" class="active">Assets</a>
+            <a href="{% url 'shelf:list' %}">Shelves</a>
+            <a href="{% url 'profile:profile' %}">Profile</a>
+            <a href="{% url 'user_settings:settings' %}">Settings</a>
+            <a href="{% url 'login:logout' %}">Logout</a>
+        </div>
+    </nav>
+
+    <main class="content narrow">
+        <h1>{% if mode == "edit" %}Edit Asset{% else %}Upload a Spritesheet{% endif %}</h1>
+
+        <div class="form-card">
+            <form method="post" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <p class="error">{{ form.non_field_errors }}</p>
+                {% endif %}
+
+                <label for="{{ form.title.id_for_label }}">Title</label>
+                {{ form.title }}
+                {% for e in form.title.errors %}<p class="field-error">{{ e }}</p>{% endfor %}
+
+                <label for="{{ form.file_path.id_for_label }}">{{ form.fields.file_path.label }}</label>
+                {% if mode == "edit" and asset.file_path %}
+                    <img id="upload-preview" class="upload-preview" src="{{ asset.file_path.url }}" alt="Current spritesheet">
+                {% else %}
+                    <img id="upload-preview" class="upload-preview" src="" alt="" hidden>
+                {% endif %}
+                {{ form.file_path }}
+                {% for e in form.file_path.errors %}<p class="field-error">{{ e }}</p>{% endfor %}
+
+                <div class="field-row">
+                    <div>
+                        <label for="{{ form.frame_width.id_for_label }}">Frame width (px)</label>
+                        {{ form.frame_width }}
+                    </div>
+                    <div>
+                        <label for="{{ form.frame_height.id_for_label }}">Frame height (px)</label>
+                        {{ form.frame_height }}
+                    </div>
+                </div>
+                <p class="field-hint">The pixel size of a single animation frame in the sheet — used to slice it for the animator preview.</p>
+
+                <label for="{{ form.license_type.id_for_label }}">License</label>
+                {{ form.license_type }}
+
+                <label for="{{ form.tags.id_for_label }}">Tags</label>
+                {{ form.tags }}
+                <p class="field-hint">{{ form.tags.help_text }}</p>
+
+                <button type="submit" class="primary-btn">{% if mode == "edit" %}Save Changes{% else %}Upload{% endif %}</button>
+            </form>
+        </div>
+    </main>
+
+    <script src="{% static 'js/asset/asset.js' %}"></script>
+</body>
+</html>

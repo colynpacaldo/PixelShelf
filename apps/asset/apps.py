@@ -1,0 +1,8 @@
+from django.apps import AppConfig
+
+
+class AssetConfig(AppConfig):
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "apps.asset"
+    label = "feature_asset"
+    verbose_name = "Asset"

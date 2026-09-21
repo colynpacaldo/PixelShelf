@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Shelf · PixelShelf</title>
+    <link rel="stylesheet" href="{% static 'css/shelf/shelf.css' %}">
+</head>
+<body>
+    <nav class="topbar">
+        <a class="brand" href="{% url 'home:home' %}">🎮 PixelShelf</a>
+        <div class="nav-links">
+            <a href="{% url 'home:home' %}">Home</a>
+            <a href="{% url 'asset:list' %}">Assets</a>
+            <a href="{% url 'shelf:list' %}" class="active">Shelves</a>
+            <a href="{% url 'profile:profile' %}">Profile</a>
+            <a href="{% url 'user_settings:settings' %}">Settings</a>
+            <a href="{% url 'login:logout' %}">Logout</a>
+        </div>
+    </nav>
+
+    <main class="content narrow">
+        <div class="form-card confirm-card">
+            <h1>Delete "{{ shelf.title }}"?</h1>
+            <p>This removes the shelf. Assets on it are not deleted, only unlinked from this shelf.</p>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="confirm-actions">
+                    <a href="{% url 'shelf:detail' shelf.pk %}" class="secondary-btn-inline">Cancel</a>
+                    <button type="submit" class="danger-btn">Delete Shelf</button>
+                </div>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
