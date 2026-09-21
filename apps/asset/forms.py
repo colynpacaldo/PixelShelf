@@ -27,9 +27,9 @@ class AssetForm(forms.ModelForm):
             'title',
             'file_path',
             'is_spritesheet',
+            'license_type',
             'frame_width',
             'frame_height',
-            'license',
         ]
         widgets = {
             'frame_width': forms.HiddenInput(),
