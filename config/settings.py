@@ -26,16 +26,30 @@ load_dotenv(BASE_DIR / ".env")
 # ---------------------------------------------------------------------------
 SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY",
-    "django-insecure-change-me-before-deploying",
+    os.environ.get("SECRET_KEY", "django-insecure-change-me-before-deploying"),
 )
 
 DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = [
     h.strip()
-    for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+    for h in os.environ.get(
+        "DJANGO_ALLOWED_HOSTS", 
+        "127.0.0.1,localhost,pixelshelf-2tnc.onrender.com,.onrender.com"
+    ).split(",")
     if h.strip()
 ]
+
+# Required for login forms, asset uploads, and CSRF protection on Render
+CSRF_TRUSTED_ORIGINS = [
+    "https://pixelshelf-2tnc.onrender.com",
+    "https://*.onrender.com",
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
+]
+
+# Tell Django it's behind Render's HTTPS reverse proxy
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # ---------------------------------------------------------------------------
 # Applications
@@ -62,7 +76,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -139,13 +153,23 @@ USE_TZ = True
 # ---------------------------------------------------------------------------
 # Static & media files
 # ---------------------------------------------------------------------------
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-MEDIA_URL = "media/"
+# Enable WhiteNoise's compressed caching for static assets
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

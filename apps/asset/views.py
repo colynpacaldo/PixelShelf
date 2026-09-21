@@ -1,3 +1,5 @@
+import os
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -9,12 +11,6 @@ from apps.tag.models import Tag
 from .forms import AssetForm
 from .models import Asset
 
-from apps.tag.models import Tag
-
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Asset
-from .forms import AssetForm
-from apps.tag.models import Tag
 
 def _get_or_create_tag(name):
     tag = Tag.objects.filter(name__iexact=name).first()
@@ -27,10 +23,10 @@ def _sync_tags(asset, tag_names):
 
 def _report_detection(request, form):
     """Tell the user what the frame auto-detection found (if it ran)."""
-    grid = form.detected
+    grid = getattr(form, "detected", None)
     if not grid:
         return
-    frames = grid["cols"] * grid["rows"]
+    frames = grid.get("cols", 1) * grid.get("rows", 1)
     if frames > 1:
         messages.info(
             request,
@@ -85,12 +81,16 @@ def asset_upload_view(request):
         if form.is_valid():
             asset = form.save(commit=False)
             asset.user = request.user
+
+            # Map spritesheet fields if provided or auto-detected
+            asset.is_spritesheet = form.cleaned_data.get("is_spritesheet", False)
             if form.cleaned_data.get("frame_width"):
                 asset.frame_width = form.cleaned_data["frame_width"]
             if form.cleaned_data.get("frame_height"):
                 asset.frame_height = form.cleaned_data["frame_height"]
+
             asset.save()
-            _sync_tags(asset, form.cleaned_data["tags"])
+            _sync_tags(asset, form.cleaned_data.get("tags", []))
             messages.success(request, "Asset uploaded.")
             _report_detection(request, form)
             return redirect("asset:detail", pk=asset.pk)
@@ -110,11 +110,20 @@ def asset_detail_view(request, pk):
         messages.success(request, f'Added to "{shelf.title}".')
         return redirect("asset:detail", pk=asset.pk)
 
+    # Safe check: verifies the physical file exists without crashing if an ephemeral container restarted
+    file_exists = False
+    if asset.file_path:
+        try:
+            file_exists = asset.file_path.storage.exists(asset.file_path.name)
+        except Exception:
+            file_exists = False
+
     return render(
         request,
         "asset/asset_detail.html",
         {
             "asset": asset,
+            "file_exists": file_exists,
             "user_shelves": Shelf.objects.filter(user=request.user).exclude(assets=asset),
             "shelves_containing": asset.shelves.all(),
         },
@@ -129,12 +138,15 @@ def asset_edit_view(request, pk):
         form = AssetForm(request.POST, request.FILES, instance=asset)
         if form.is_valid():
             asset = form.save(commit=False)
+
+            asset.is_spritesheet = form.cleaned_data.get("is_spritesheet", False)
             if form.cleaned_data.get("frame_width"):
                 asset.frame_width = form.cleaned_data["frame_width"]
             if form.cleaned_data.get("frame_height"):
                 asset.frame_height = form.cleaned_data["frame_height"]
+
             asset.save()
-            _sync_tags(asset, form.cleaned_data["tags"])
+            _sync_tags(asset, form.cleaned_data.get("tags", []))
             messages.success(request, "Asset updated.")
             _report_detection(request, form)
             return redirect("asset:detail", pk=asset.pk)
