@@ -3,6 +3,88 @@ body {
     font-family: "Segoe UI", Arial, sans-serif;
     background: #f9fafb;
     color: #111827;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+body.dark-mode {
+    background: #0f172a;
+    color: #e5e7eb;
+}
+
+body.dark-mode .topbar {
+    background: #020817;
+}
+
+body.dark-mode .brand,
+body.dark-mode .nav-links a,
+body.dark-mode .see-all,
+body.dark-mode .empty-hint a,
+body.dark-mode .nav-links a.active {
+    color: #c4b5fd;
+}
+
+body.dark-mode .nav-links a:hover,
+body.dark-mode .nav-links a.active {
+    color: #fff;
+}
+
+body.dark-mode .content h1,
+body.dark-mode .page-header h1,
+body.dark-mode .asset-card-body h3,
+body.dark-mode .shelf-card-body h3,
+body.dark-mode .form-card label,
+body.dark-mode .shelf-description,
+body.dark-mode .field-error {
+    color: #e5e7eb;
+}
+
+body.dark-mode .asset-card,
+body.dark-mode .shelf-card,
+body.dark-mode .form-card,
+body.dark-mode .secondary-btn-inline,
+body.dark-mode .danger-btn-inline,
+body.dark-mode .filter-bar input,
+body.dark-mode .filter-bar select,
+body.dark-mode .form-card input,
+body.dark-mode .form-card textarea,
+body.dark-mode .form-card select,
+body.dark-mode .tag-chip {
+    background: #111827;
+    color: #e5e7eb;
+    border-color: #334155;
+}
+
+body.dark-mode .asset-meta,
+body.dark-mode .shelf-card-body p,
+body.dark-mode .empty-hint,
+body.dark-mode .clear-link,
+body.dark-mode .field-hint,
+body.dark-mode .meta-list dt,
+body.dark-mode .meta-list dd {
+    color: #cbd5e1;
+}
+
+body.dark-mode .primary-btn-inline,
+body.dark-mode .primary-btn,
+body.dark-mode .primary-btn-inline:hover,
+body.dark-mode .primary-btn:hover {
+    background: #8b5cf6;
+    color: #fff;
+}
+
+body.dark-mode .secondary-btn-inline,
+body.dark-mode .danger-btn-inline {
+    background: #0f172a;
+}
+
+body.dark-mode .asset-thumb,
+body.dark-mode .shelf-card-thumbs {
+    background-color: #0b1120;
+}
+
+body.dark-mode .info {
+    background: #14532d;
+    color: #dcfce7;
 }
 
 /* --- Nav (shared look with the rest of the app) --- */
@@ -547,3 +629,72 @@ body {
 }
 
 .advanced[open] summary { margin-bottom: 0.8rem; }
+
+/* --- Dark mode readability fixes --- */
+body.dark-mode {
+    color-scheme: dark;
+}
+
+body.dark-mode .animator-panel,
+body.dark-mode .meta-panel {
+    background: #111827;
+    color: #e5e7eb;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.35);
+}
+
+body.dark-mode .meta-panel h3,
+body.dark-mode .meta-panel .bg-switcher-label,
+body.dark-mode .meta-panel .frame-label,
+body.dark-mode .meta-panel .fps-control,
+body.dark-mode .meta-panel .bg-switcher,
+body.dark-mode .meta-panel .shelf-mini-list,
+body.dark-mode .meta-panel .add-to-shelf-form {
+    color: #e5e7eb;
+}
+
+body.dark-mode .meta-panel hr {
+    border-top-color: #334155;
+}
+
+body.dark-mode .meta-panel .shelf-mini-list a {
+    color: #a78bfa;
+}
+
+body.dark-mode .meta-panel .shelf-mini-list a:hover {
+    color: #c4b5fd;
+}
+
+body.dark-mode .ctrl-btn,
+body.dark-mode .bg-swatch,
+body.dark-mode .add-to-shelf-form select {
+    background: #0f172a;
+    color: #e5e7eb;
+    border-color: #475569;
+}
+
+body.dark-mode .ctrl-btn:hover,
+body.dark-mode .bg-swatch:hover {
+    background: #1e293b;
+}
+
+body.dark-mode .ctrl-btn.primary,
+body.dark-mode .bg-swatch.active {
+    background: #8b5cf6;
+    color: #fff;
+    border-color: #8b5cf6;
+}
+
+body.dark-mode .field-hint,
+body.dark-mode .clear-link,
+body.dark-mode .frame-label,
+body.dark-mode .fps-control,
+body.dark-mode .bg-switcher-label {
+    color: #94a3b8;
+}
+
+body.dark-mode .form-card input::placeholder,
+body.dark-mode .form-card textarea::placeholder,
+body.dark-mode .filter-bar input::placeholder {
+    color: #94a3b8;
+    opacity: 1;
+}

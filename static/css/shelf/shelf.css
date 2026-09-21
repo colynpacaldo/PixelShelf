@@ -3,6 +3,7 @@ body {
     font-family: "Segoe UI", Arial, sans-serif;
     background: #f9fafb;
     color: #111827;
+    transition: background 0.2s ease, color 0.2s ease;
 }
 
 .topbar {
@@ -296,3 +297,97 @@ body {
 }
 
 .remove-btn:hover { background: #fef2f2; }
+
+body.dark-mode {
+    background: #0f172a;
+    color: #e5e7eb;
+}
+
+body.dark-mode .topbar {
+    background: #020817;
+}
+
+/* Navigation and shelf description */
+body.dark-mode .brand,
+body.dark-mode .nav-links a,
+body.dark-mode .nav-links a.active,
+body.dark-mode .empty-hint a,
+body.dark-mode .shelf-description {
+    color: #cbd5e1;
+}
+
+body.dark-mode .nav-links a:hover,
+body.dark-mode .nav-links a.active {
+    color: #fff;
+}
+
+/* Shelf and asset cards */
+body.dark-mode .shelf-card,
+body.dark-mode .asset-card,
+body.dark-mode .form-card,
+body.dark-mode .secondary-btn-inline,
+body.dark-mode .danger-btn-inline,
+body.dark-mode .form-card input,
+body.dark-mode .form-card textarea,
+body.dark-mode .remove-btn {
+    background: #111827;
+    color: #e5e7eb;
+    border-color: #334155;
+}
+
+/* Text inside shelves and asset cards */
+body.dark-mode .shelf-card-body h3,
+body.dark-mode .shelf-card-body p,
+body.dark-mode .asset-card-body h3,
+body.dark-mode .asset-meta,
+body.dark-mode .page-header h1,
+body.dark-mode .empty-hint,
+body.dark-mode .form-card label,
+body.dark-mode .confirm-card p {
+    color: #e5e7eb;
+}
+
+/* User-entered shelf description */
+body.dark-mode .shelf-description {
+    color: #cbd5e1;
+}
+
+/* Asset image area */
+body.dark-mode .asset-thumb,
+body.dark-mode .shelf-card-thumbs {
+    background-color: #0b1120;
+}
+
+/* Remove button */
+body.dark-mode .remove-btn {
+    color: #f87171;
+}
+
+/* Buttons */
+body.dark-mode .primary-btn,
+body.dark-mode .primary-btn-inline,
+body.dark-mode .primary-btn:hover,
+body.dark-mode .primary-btn-inline:hover {
+    background: #8b5cf6;
+    color: #fff;
+}
+
+body.dark-mode .secondary-btn-inline,
+body.dark-mode .danger-btn-inline {
+    background: #0f172a;
+}
+
+/* Success messages */
+body.dark-mode .info {
+    background: #14532d;
+    color: #dcfce7;
+}
+
+body.dark-mode .asset-card-body h3,
+body.dark-mode .asset-meta {
+    color: #e5e7eb;
+}
+
+body.dark-mode .shelf-description {
+    color: #cbd5e1;
+}

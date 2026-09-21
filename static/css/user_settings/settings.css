@@ -3,6 +3,53 @@ body {
     font-family: "Segoe UI", Arial, sans-serif;
     background: #f9fafb;
     color: #111827;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+body.dark-mode {
+    background: #0f172a;
+    color: #e5e7eb;
+}
+
+body.dark-mode .topbar {
+    background: #020817;
+}
+
+body.dark-mode .brand,
+body.dark-mode .nav-links a,
+body.dark-mode .info,
+body.dark-mode .nav-links a:hover {
+    color: #c4b5fd;
+}
+
+body.dark-mode .nav-links a:hover {
+    color: #fff;
+}
+
+body.dark-mode .content h1,
+body.dark-mode .settings-card,
+body.dark-mode .toggle-row,
+body.dark-mode .primary-btn,
+body.dark-mode .info {
+    color: #e5e7eb;
+}
+
+body.dark-mode .settings-card {
+    background: #111827;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.35);
+}
+
+body.dark-mode .primary-btn {
+    background: #8b5cf6;
+}
+
+body.dark-mode .primary-btn:hover {
+    background: #7c3aed;
+}
+
+body.dark-mode .info {
+    background: #14532d;
+    color: #dcfce7;
 }
 
 .topbar {
@@ -84,9 +131,4 @@ body {
     padding: 0.6rem 0.8rem;
     border-radius: 8px;
     font-size: 0.85rem;
-}
-
-body.dark-mode-preview {
-    background: #111827;
-    color: #f3f4f6;
 }

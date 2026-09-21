@@ -3,6 +3,60 @@ body {
     font-family: "Segoe UI", Arial, sans-serif;
     background: #f9fafb;
     color: #111827;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+body.dark-mode {
+    background: #0f172a;
+    color: #e5e7eb;
+}
+
+body.dark-mode .topbar {
+    background: #020817;
+}
+
+body.dark-mode .brand,
+body.dark-mode .nav-links a,
+body.dark-mode .nav-links a.active {
+    color: #c4b5fd;
+}
+
+body.dark-mode .nav-links a:hover,
+body.dark-mode .nav-links a.active {
+    color: #fff;
+}
+
+body.dark-mode .profile-card,
+body.dark-mode .primary-btn {
+    background: #111827;
+    color: #e5e7eb;
+}
+
+body.dark-mode label,
+body.dark-mode h1,
+body.dark-mode .info {
+    color: #e5e7eb;
+}
+
+body.dark-mode input[type="text"],
+body.dark-mode textarea,
+body.dark-mode input[type="file"] {
+    background: #0f172a;
+    color: #e5e7eb;
+    border-color: #334155;
+}
+
+body.dark-mode .primary-btn {
+    background: #8b5cf6;
+}
+
+body.dark-mode .primary-btn:hover {
+    background: #7c3aed;
+}
+
+body.dark-mode .info {
+    background: #14532d;
+    color: #dcfce7;
 }
 
 .topbar {
