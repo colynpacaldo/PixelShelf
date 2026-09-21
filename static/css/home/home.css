@@ -1,0 +1,42 @@
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f9fafb;
+    color: #111827;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    background: #111827;
+    color: #fff;
+}
+
+.brand {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.nav-links a {
+    color: #e5e7eb;
+    text-decoration: none;
+    margin-left: 1.25rem;
+    font-size: 0.9rem;
+}
+
+.nav-links a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.content {
+    max-width: 720px;
+    margin: 3rem auto;
+    padding: 0 1.5rem;
+}
+
+.content h1 {
+    font-size: 1.8rem;
+}

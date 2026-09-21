@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'css/login/login.css' %}">
+</head>
+<body>
+    <div class="auth-card">
+        <h1>Welcome back</h1>
+        <p class="subtitle">Log in to continue</p>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        {% if messages %}
+            {% for message in messages %}
+                <p class="info">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Username" value="{{ username|default:'' }}" required autofocus>
+
+            <label for="password">Password</label>
+            <div class="password-row">
+                <input type="password" id="password" name="password" placeholder="Password" required>
+                <button type="button" id="toggle-password">Show</button>
+            </div>
+
+            <button type="submit" class="primary-btn">Login</button>
+        </form>
+
+        <a class="link" href="{% url 'register:register' %}">Create an account</a>
+    </div>
+
+    <script src="{% static 'js/login/login.js' %}"></script>
+</body>
+</html>
