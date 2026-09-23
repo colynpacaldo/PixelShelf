@@ -9,30 +9,42 @@
     <link rel="stylesheet" href="{% static 'css/register/register.css' %}">
 </head>
 <body>
-    <div class="auth-card">
-        <h1>Join PixelShelf</h1>
-        <p class="subtitle">It only takes a minute</p>
+    <div class="auth-wrapper">
+        <div class="auth-side">
+            <h1>PixelShelf</h1>
+            <p>Organize, tag, and preview your 2D game assets in one place.</p>
+            <ul class="auth-side-list">
+                <li>Upload and tag spritesheets</li>
+                <li>Preview animations in-browser</li>
+                <li>Keep collections organized</li>
+            </ul>
+        </div>
 
-        {% if error %}
-            <p class="error">{{ error }}</p>
-        {% endif %}
+        <div class="auth-card">
+            <h2>Create your account</h2>
+            <p class="subtitle">It only takes a minute</p>
 
-        <form method="post" id="register-form">
-            {% csrf_token %}
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" placeholder="Username" value="{{ username|default:'' }}" required autofocus>
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
 
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="Password" required minlength="8">
+            <form method="post" id="register-form">
+                {% csrf_token %}
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Username" value="{{ username|default:'' }}" required autofocus>
 
-            <label for="confirm_password">Confirm password</label>
-            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm password" required minlength="8">
-            <p class="field-error" id="match-error" hidden>Passwords do not match.</p>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Password" required minlength="8">
 
-            <button type="submit" class="primary-btn">Register</button>
-        </form>
+                <label for="confirm_password">Confirm password</label>
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm password" required minlength="8">
+                <p class="field-error" id="match-error" hidden>Passwords do not match.</p>
 
-        <a class="link" href="{% url 'login:login' %}">Back to Login</a>
+                <button type="submit" class="primary-btn">Register</button>
+            </form>
+
+            <a class="link" href="{% url 'login:login' %}">Back to Login</a>
+        </div>
     </div>
 
     <script src="{% static 'js/register/register.js' %}"></script>
