@@ -10,6 +10,10 @@ class Shelf(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="shelves")
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True)
+    is_public = models.BooleanField(
+        default=False,
+        help_text="Let other users view this shelf.",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     assets = models.ManyToManyField(Asset, through="ShelfAsset", related_name="shelves", blank=True)
 
