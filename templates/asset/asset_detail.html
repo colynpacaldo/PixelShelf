@@ -40,7 +40,7 @@
         <div class="detail-grid">
             <!-- Sprite viewer: static sprite by default, animator for spritesheets -->
             <div class="animator-panel">
-                <div id="canvas-stage" class="canvas-stage bg-light">
+                <div id="canvas-stage" class="canvas-stage {% if site_dark_mode %}bg-dark{% else %}bg-light{% endif %}">
                     <canvas id="sprite-canvas"
                             data-src="{{ asset.file_path.url }}"
                             {% if asset.is_animated %}
@@ -66,8 +66,8 @@
 
                 <div class="bg-switcher">
                     <span class="bg-switcher-label">Background:</span>
-                    <button type="button" class="bg-swatch bg-swatch-light active" data-bg="light" title="Light">Light</button>
-                    <button type="button" class="bg-swatch bg-swatch-dark" data-bg="dark" title="Dark">Dark</button>
+                    <button type="button" class="bg-swatch bg-swatch-light{% if not site_dark_mode %} active{% endif %}" data-bg="light" title="Light">Light</button>
+                    <button type="button" class="bg-swatch bg-swatch-dark{% if site_dark_mode %} active{% endif %}" data-bg="dark" title="Dark">Dark</button>
                     <button type="button" class="bg-swatch bg-swatch-transparent" data-bg="transparent" title="Transparent">Transparent</button>
                 </div>
             </div>

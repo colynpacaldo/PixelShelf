@@ -32,10 +32,13 @@ class AssetForm(forms.ModelForm):
             'frame_height',
         ]
         widgets = {
-            'frame_width': forms.HiddenInput(),
-            'frame_height': forms.HiddenInput(),
+            'frame_width': forms.NumberInput(attrs={
+                'min': 1, 'step': 1, 'placeholder': 'Auto',
+            }),
+            'frame_height': forms.NumberInput(attrs={
+                'min': 1, 'step': 1, 'placeholder': 'Auto',
+            }),
         }
-        
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
