@@ -55,7 +55,16 @@
                 {% endfor %}
             </div>
         {% else %}
-            <p class="empty-hint">{% if query %}No public shelves match "{{ query }}".{% else %}No public shelves have been shared yet. Make one of yours public to start the community.{% endif %}</p>
+            <section class="empty-state" aria-labelledby="community-empty-title">
+                <span class="empty-state-mark" aria-hidden="true"></span>
+                <h2 id="community-empty-title">{% if query %}No shelves found{% else %}The community is just getting started{% endif %}</h2>
+                <p>{% if query %}No public shelves match "{{ query }}". Try another search or clear your filters.{% else %}No public shelves have been shared yet. Start the collection by creating a shelf of your own.{% endif %}</p>
+                {% if query %}
+                    <a href="{% url 'shelf:community' %}" class="secondary-btn-inline">Clear search</a>
+                {% else %}
+                    <a href="{% url 'shelf:create' %}" class="primary-btn-inline">Create your first shelf</a>
+                {% endif %}
+            </section>
         {% endif %}
 
         {% if featured_shelves and not shelves %}

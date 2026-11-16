@@ -19,6 +19,7 @@ class CommunityDiscoveryTests(TestCase):
 		response = self.client.get(reverse("shelf:community"), {"q": "no match"})
 
 		self.assertEqual(response.status_code, 200)
+		self.assertContains(response, 'class="empty-state"')
 		self.assertContains(response, "Popular public shelves")
 		self.assertContains(response, self.shelf.title)
 
@@ -27,3 +28,16 @@ class CommunityDiscoveryTests(TestCase):
 
 		self.assertEqual(response.status_code, 200)
 		self.assertContains(response, self.shelf.title, count=1)
+
+
+class ShelfListEmptyStateTests(TestCase):
+	def setUp(self):
+		user = get_user_model().objects.create_user(username="newcreator")
+		self.client.force_login(user)
+
+	def test_empty_shelves_page_has_create_call_to_action(self):
+		response = self.client.get(reverse("shelf:list"))
+
+		self.assertEqual(response.status_code, 200)
+		self.assertContains(response, 'class="empty-state"')
+		self.assertContains(response, "Create your first shelf")

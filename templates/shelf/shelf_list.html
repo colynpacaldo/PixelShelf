@@ -55,7 +55,12 @@
                 {% endfor %}
             </div>
         {% else %}
-            <p class="empty-hint">No shelves yet. <a href="{% url 'shelf:create' %}">Create your first shelf</a> to start organizing.</p>
+            <section class="empty-state" aria-labelledby="shelves-empty-title">
+                <span class="empty-state-mark" aria-hidden="true"></span>
+                <h2 id="shelves-empty-title">Your shelves start here</h2>
+                <p>No shelves yet. Create one to collect and organize your favorite game assets.</p>
+                <a href="{% url 'shelf:create' %}" class="primary-btn-inline">Create your first shelf</a>
+            </section>
         {% endif %}
     </main>
     <script src="{% static 'js/common/nav.js' %}"></script>
