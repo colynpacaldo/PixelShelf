@@ -7,6 +7,7 @@
     <title>Community · PixelShelf</title>
     <link rel="stylesheet" href="{% static 'css/common/base.css' %}">
     <link rel="stylesheet" href="{% static 'css/shelf/shelf.css' %}">
+    <link rel="stylesheet" href="{% static 'css/common/redesign.css' %}">
 </head>
 <body class="{% if site_dark_mode %}dark-mode{% endif %}">
     <nav class="topbar">
@@ -24,15 +25,15 @@
     </nav>
 
     <main class="content">
-        <div class="page-header">
-            <h1>Community</h1>
-        </div>
-
-        <form method="get" class="community-search">
-            <input type="text" name="q" value="{{ query }}" placeholder="Search shelves or creators">
-            <button type="submit" class="secondary-btn-inline">Search</button>
-            {% if query %}<a class="clear-link" href="{% url 'shelf:community' %}">Clear</a>{% endif %}
-        </form>
+        <section class="community-discovery">
+            <h1>Find your next pixel-perfect starting point.</h1>
+            <p>Explore public shelves shared by indie creators.</p>
+            <form method="get" class="community-search">
+                <input type="text" name="q" value="{{ query }}" placeholder="Search shelves or creators" aria-label="Search public shelves or creators">
+                <button type="submit" class="secondary-btn-inline">Search</button>
+                {% if query %}<a class="clear-link" href="{% url 'shelf:community' %}">Clear</a>{% endif %}
+            </form>
+        </section>
 
         {% if shelves %}
             <div class="shelf-grid">
@@ -54,7 +55,30 @@
                 {% endfor %}
             </div>
         {% else %}
-            <p class="empty-hint">{% if query %}No public shelves match "{{ query }}".{% else %}No public shelves yet. Make one of yours public to start the community!{% endif %}</p>
+            <p class="empty-hint">{% if query %}No public shelves match "{{ query }}".{% else %}No public shelves have been shared yet. Make one of yours public to start the community.{% endif %}</p>
+        {% endif %}
+
+        {% if featured_shelves and not shelves %}
+            <section class="community-suggestions">
+            <h2>Popular public shelves</h2>
+                <div class="shelf-grid">
+                    {% for shelf in featured_shelves %}
+                        <a class="shelf-card" href="{% url 'shelf:detail' shelf.pk %}">
+                            <div class="shelf-card-thumbs">
+                                {% for asset in shelf.assets.all|slice:":4" %}
+                                    <img src="{{ asset.file_path.url }}" alt="">
+                                {% empty %}
+                                    <span class="shelf-card-empty">Empty</span>
+                                {% endfor %}
+                            </div>
+                            <div class="shelf-card-body">
+                                <h3>{{ shelf.title }}</h3>
+                                <p>{{ shelf.assets.count }} asset{{ shelf.assets.count|pluralize }} · by {{ shelf.user.username }}</p>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            </section>
         {% endif %}
     </main>
     <script src="{% static 'js/common/nav.js' %}"></script>

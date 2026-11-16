@@ -7,6 +7,7 @@
     <title>Settings</title>
     <link rel="stylesheet" href="{% static 'css/common/base.css' %}">
     <link rel="stylesheet" href="{% static 'css/user_settings/settings.css' %}">
+    <link rel="stylesheet" href="{% static 'css/common/redesign.css' %}">
 </head>
 <body class="{% if site_dark_mode %}dark-mode{% endif %}">
     <nav class="topbar">
@@ -18,12 +19,12 @@
             <a href="{% url 'shelf:list' %}">Shelves</a>
             <a href="{% url 'shelf:community' %}">Community</a>
             <a href="{% url 'profile:profile' %}">Profile</a>
-            <a href="{% url 'user_settings:settings' %}">Settings</a>
+            <a href="{% url 'user_settings:settings' %}" class="active" aria-current="page">Settings</a>
             <a href="{% url 'login:logout' %}">Logout</a>
         </div>
     </nav>
 
-    <main class="content">
+    <main class="content account-content">
         <h1>Settings</h1>
 
         {% if messages %}
@@ -36,12 +37,12 @@
             <form method="post">
                 {% csrf_token %}
 
-                <label class="toggle-row">
+                <label class="toggle-row" for="{{ form.dark_mode.id_for_label }}">
                     {{ form.dark_mode }}
                     <span>Dark mode</span>
                 </label>
 
-                <label class="toggle-row">
+                <label class="toggle-row" for="{{ form.email_notifications.id_for_label }}">
                     {{ form.email_notifications }}
                     <span>Email notifications</span>
                 </label>

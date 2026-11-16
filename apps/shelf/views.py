@@ -87,14 +87,22 @@ def shelf_delete_view(request, pk):
 @login_required(login_url="login:login")
 def community_view(request):
     """Every public shelf from every user, with optional search."""
+    public_shelves = Shelf.objects.filter(is_public=True)
     shelves = (
-        Shelf.objects.filter(is_public=True)
+        public_shelves
         .select_related("user")
         .prefetch_related("assets")
+    )
+    featured_shelves = (
+        public_shelves.select_related("user").prefetch_related("assets")[:3]
     )
     query = request.GET.get("q", "").strip()
     if query:
         shelves = shelves.filter(
             Q(title__icontains=query) | Q(user__username__icontains=query)
         )
-    return render(request, "shelf/community.html", {"shelves": shelves, "query": query})
+    return render(
+        request,
+        "shelf/community.html",
+        {"shelves": shelves, "query": query, "featured_shelves": featured_shelves},
+    )

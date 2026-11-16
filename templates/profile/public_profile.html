@@ -7,6 +7,7 @@
     <title>{{ owner.username }} · PixelShelf</title>
     <link rel="stylesheet" href="{% static 'css/common/base.css' %}">
     <link rel="stylesheet" href="{% static 'css/shelf/shelf.css' %}">
+    <link rel="stylesheet" href="{% static 'css/common/redesign.css' %}">
 </head>
 <body class="{% if site_dark_mode %}dark-mode{% endif %}">
     <nav class="topbar">
@@ -17,7 +18,7 @@
             <a href="{% url 'asset:list' %}">Assets</a>
             <a href="{% url 'shelf:list' %}">Shelves</a>
             <a href="{% url 'shelf:community' %}">Community</a>
-            <a href="{% url 'profile:profile' %}">Profile</a>
+            <a href="{% url 'profile:profile' %}" class="active" aria-current="page">Profile</a>
             <a href="{% url 'user_settings:settings' %}">Settings</a>
             <a href="{% url 'login:logout' %}">Logout</a>
         </div>
