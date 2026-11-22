@@ -8,6 +8,12 @@
 
 *, *::before, *::after {
     box-sizing: border-box;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+    display: none;
 }
 
 html {
@@ -39,6 +45,22 @@ img, svg, canvas, video {
     position: relative;
     flex-wrap: wrap;
     row-gap: 0.5rem;
+}
+
+body .topbar .brand,
+body.dark-mode .topbar .brand {
+    color: #fff;
+}
+
+body .topbar .nav-links a,
+body.dark-mode .topbar .nav-links a {
+    color: #c4b5fd;
+}
+
+body .topbar .nav-links a.active,
+body.dark-mode .topbar .nav-links a.active {
+    color: #fff;
+    text-decoration: underline;
 }
 
 .nav-toggle {

@@ -22,7 +22,7 @@ body {
 }
 
 .nav-links a {
-    color: #e5e7eb;
+    color: #c4b5fd;
     text-decoration: none;
     margin-left: 1.25rem;
     font-size: 0.9rem;
@@ -307,10 +307,9 @@ body.dark-mode .topbar {
 /* Navigation and shelf description */
 body.dark-mode .brand,
 body.dark-mode .nav-links a,
-body.dark-mode .nav-links a.active,
 body.dark-mode .empty-hint a,
 body.dark-mode .shelf-description {
-    color: #cbd5e1;
+    color: #c4b5fd;
 }
 
 body.dark-mode .nav-links a:hover,

@@ -53,12 +53,16 @@ body.dark-mode .primary-btn:hover {
 
 body.dark-mode .see-all,
 body.dark-mode .empty-hint a,
-body.dark-mode .brand,
 body.dark-mode .nav-links a {
     color: #c4b5fd;
 }
 
-body.dark-mode .nav-links a:hover {
+body.dark-mode .brand {
+    color: #fff;
+}
+
+body.dark-mode .nav-links a:hover,
+body.dark-mode .nav-links a.active {
     color: #fff;
 }
 
@@ -94,7 +98,8 @@ body.dark-mode .info {
     font-size: 0.9rem;
 }
 
-.nav-links a:hover {
+.nav-links a:hover,
+.nav-links a.active {
     color: #fff;
     text-decoration: underline;
 }

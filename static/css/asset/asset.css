@@ -15,12 +15,15 @@ body.dark-mode .topbar {
     background: #020817;
 }
 
-body.dark-mode .brand,
 body.dark-mode .nav-links a,
 body.dark-mode .see-all,
 body.dark-mode .empty-hint a,
 body.dark-mode .nav-links a.active {
     color: #c4b5fd;
+}
+
+body.dark-mode .brand {
+    color: #fff;
 }
 
 body.dark-mode .nav-links a:hover,
