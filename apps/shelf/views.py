@@ -1,8 +1,10 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, Subquery
 from django.http import Http404, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
+
+from apps.asset.models import Asset
 
 from .forms import ShelfForm
 from .models import Shelf, ShelfAsset
@@ -97,4 +99,33 @@ def community_view(request):
         shelves = shelves.filter(
             Q(title__icontains=query) | Q(user__username__icontains=query)
         )
-    return render(request, "shelf/community.html", {"shelves": shelves, "query": query})
+    return render(
+        request,
+        "shelf/community.html",
+        {
+            "shelves": shelves,
+            "query": query,
+            "generated_sql": str(shelves.query),
+        },
+    )
+
+
+@login_required(login_url="login:login")
+def community_assets_view(request):
+    """List assets on public shelves using a database subquery."""
+    public_asset_ids = ShelfAsset.objects.filter(shelf__is_public=True).values(
+        "asset_id"
+    )
+    assets = (
+        Asset.objects.filter(pk__in=Subquery(public_asset_ids))
+        .select_related("user")
+        .distinct()
+    )
+    return render(
+        request,
+        "shelf/community_assets.html",
+        {
+            "assets": assets,
+            "generated_sql": str(assets.query),
+        },
+    )

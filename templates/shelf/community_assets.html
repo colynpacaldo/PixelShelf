@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Public Shelf Assets · PixelShelf</title>
+    <link rel="stylesheet" href="{% static 'css/common/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/asset/asset.css' %}">
+</head>
+<body class="{% if site_dark_mode %}dark-mode{% endif %}">
+    <nav class="topbar">
+        <a class="brand" href="{% url 'home:home' %}">PixelShelf</a>
+        <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
+        <div class="nav-links" id="nav-links">
+            <a href="{% url 'home:home' %}">Home</a>
+            <a href="{% url 'asset:list' %}">Assets</a>
+            <a href="{% url 'shelf:list' %}">Shelves</a>
+            <a href="{% url 'shelf:community' %}" class="active">Community</a>
+            <a href="{% url 'profile:profile' %}">Profile</a>
+            <a href="{% url 'user_settings:settings' %}">Settings</a>
+            <a href="{% url 'login:logout' %}">Logout</a>
+        </div>
+    </nav>
+
+    <main class="content">
+        <div class="page-header">
+            <div>
+                <h1>Assets in Public Shelves</h1>
+                <p>Browse assets shared through public community shelves.</p>
+            </div>
+            <a class="secondary-btn-inline" href="{% url 'shelf:community' %}">Back to Community</a>
+        </div>
+
+        {% if assets %}
+            <div class="asset-grid">
+                {% for asset in assets %}
+                    <a class="asset-card" href="{% url 'asset:detail' asset.pk %}">
+                        <div class="asset-thumb">
+                            <img src="{{ asset.file_path.url }}" alt="{{ asset.title }}">
+                        </div>
+                        <div class="asset-card-body">
+                            <h3>{{ asset.title }}</h3>
+                            <p class="asset-meta">by {{ asset.user.username }}</p>
+                            <p class="asset-meta">{{ asset.get_license_type_display }}</p>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-hint">No assets are currently in public shelves.</p>
+        {% endif %}
+
+        <details style="margin-top:2rem;">
+            <summary>Show generated SUBQUERY SQL</summary>
+            <pre style="white-space:pre-wrap; background:#111827; color:#f8fafc; padding:1rem; border-radius:8px;">{{ generated_sql }}</pre>
+        </details>
+    </main>
+    <script src="{% static 'js/common/nav.js' %}"></script>
+</body>
+</html>
