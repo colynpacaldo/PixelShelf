@@ -33,8 +33,11 @@
         <div class="page-header">
             <h1>{{ asset.title }}</h1>
             <div class="header-actions">
-                <a href="{% url 'asset:edit' asset.pk %}" class="secondary-btn-inline">Edit</a>
-                <a href="{% url 'asset:delete' asset.pk %}" class="danger-btn-inline">Delete</a>
+                <a href="{% url 'asset:download' asset.pk %}" class="primary-btn-inline">Download</a>
+                {% if is_owner %}
+                    <a href="{% url 'asset:edit' asset.pk %}" class="secondary-btn-inline">Edit</a>
+                    <a href="{% url 'asset:delete' asset.pk %}" class="danger-btn-inline">Delete</a>
+                {% endif %}
             </div>
         </div>
 
@@ -100,31 +103,33 @@
                     </div>
                 {% endif %}
 
-                <hr>
+                {% if is_owner %}
+                    <hr>
 
-                <h3>Shelves</h3>
-                {% if shelves_containing %}
-                    <ul class="shelf-mini-list">
-                        {% for shelf in shelves_containing %}
-                            <li><a href="{% url 'shelf:detail' shelf.pk %}">{{ shelf.title }}</a></li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p class="empty-hint">Not on any shelf yet.</p>
-                {% endif %}
-
-                {% if user_shelves %}
-                    <form method="post" class="add-to-shelf-form">
-                        {% csrf_token %}
-                        <select name="shelf_id">
-                            {% for shelf in user_shelves %}
-                                <option value="{{ shelf.pk }}">{{ shelf.title }}</option>
+                    <h3>Shelves</h3>
+                    {% if shelves_containing %}
+                        <ul class="shelf-mini-list">
+                            {% for shelf in shelves_containing %}
+                                <li><a href="{% url 'shelf:detail' shelf.pk %}">{{ shelf.title }}</a></li>
                             {% endfor %}
-                        </select>
-                        <button type="submit" class="secondary-btn-inline">Add to shelf</button>
-                    </form>
-                {% elif not shelves_containing %}
-                    <p class="empty-hint"><a href="{% url 'shelf:create' %}">Create a shelf</a> to organize this asset.</p>
+                        </ul>
+                    {% else %}
+                        <p class="empty-hint">Not on any shelf yet.</p>
+                    {% endif %}
+
+                    {% if user_shelves %}
+                        <form method="post" class="add-to-shelf-form">
+                            {% csrf_token %}
+                            <select name="shelf_id">
+                                {% for shelf in user_shelves %}
+                                    <option value="{{ shelf.pk }}">{{ shelf.title }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit" class="secondary-btn-inline">Add to shelf</button>
+                        </form>
+                    {% elif not shelves_containing %}
+                        <p class="empty-hint"><a href="{% url 'shelf:create' %}">Create a shelf</a> to organize this asset.</p>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>

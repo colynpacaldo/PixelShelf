@@ -3,6 +3,7 @@ import os
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.shelf.models import Shelf, ShelfAsset
@@ -10,6 +11,14 @@ from apps.tag.models import Tag
 
 from .forms import AssetForm
 from .models import Asset
+
+
+def _get_accessible_asset(request, pk):
+    asset = get_object_or_404(Asset, pk=pk)
+    is_owner = asset.user_id == request.user.id
+    if not is_owner and not asset.shelves.filter(is_public=True).exists():
+        raise Http404
+    return asset, is_owner
 
 
 def _get_or_create_tag(name):
@@ -102,9 +111,11 @@ def asset_upload_view(request):
 
 @login_required(login_url="login:login")
 def asset_detail_view(request, pk):
-    asset = get_object_or_404(Asset, pk=pk, user=request.user)
+    asset, is_owner = _get_accessible_asset(request, pk)
 
     if request.method == "POST" and "shelf_id" in request.POST:
+        if not is_owner:
+            raise Http404
         shelf = get_object_or_404(Shelf, pk=request.POST.get("shelf_id"), user=request.user)
         ShelfAsset.objects.get_or_create(shelf=shelf, asset=asset)
         messages.success(request, f'Added to "{shelf.title}".')
@@ -123,10 +134,29 @@ def asset_detail_view(request, pk):
         "asset/asset_detail.html",
         {
             "asset": asset,
+            "is_owner": is_owner,
             "file_exists": file_exists,
-            "user_shelves": Shelf.objects.filter(user=request.user).exclude(assets=asset),
-            "shelves_containing": asset.shelves.all(),
+            "user_shelves": (
+                Shelf.objects.filter(user=request.user).exclude(assets=asset)
+                if is_owner
+                else Shelf.objects.none()
+            ),
+            "shelves_containing": asset.shelves.filter(is_public=True)
+            if not is_owner
+            else asset.shelves.all(),
         },
+    )
+
+
+@login_required(login_url="login:login")
+def asset_download_view(request, pk):
+    asset, _ = _get_accessible_asset(request, pk)
+    if not asset.file_path or not asset.file_path.storage.exists(asset.file_path.name):
+        raise Http404("Asset file not found.")
+    return FileResponse(
+        asset.file_path.open("rb"),
+        as_attachment=True,
+        filename=asset.filename,
     )
 
 

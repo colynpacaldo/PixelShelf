@@ -52,7 +52,7 @@
             <div class="asset-grid">
                 {% for asset in assets %}
                     <div class="asset-card shelf-asset-card">
-                        {% if is_owner %}<a href="{% url 'asset:detail' asset.pk %}">{% else %}<div>{% endif %}
+                        <a href="{% url 'asset:detail' asset.pk %}">
                             <div class="asset-thumb">
                                 <img src="{{ asset.file_path.url }}" alt="{{ asset.title }}">
                             </div>
@@ -60,7 +60,7 @@
                                 <h3>{{ asset.title }}</h3>
                                 <p class="asset-meta">{{ asset.size_label }}</p>
                             </div>
-                        {% if is_owner %}</a>{% else %}</div>{% endif %}
+                        </a>
                         {% if is_owner %}
                         <form method="post" class="remove-from-shelf-form">
                             {% csrf_token %}
