@@ -37,6 +37,8 @@ class Asset(models.Model):
     frame_height = models.PositiveIntegerField(
         null=True, blank=True, help_text="Height of a single animation frame, in pixels."
     )
+    frame_offset_x = models.PositiveIntegerField(default=0)
+    frame_offset_y = models.PositiveIntegerField(default=0)
     license_type = models.CharField(
         max_length=50, choices=LICENSE_CHOICES, default="all-rights-reserved"
     )
