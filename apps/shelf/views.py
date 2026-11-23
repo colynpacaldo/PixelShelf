@@ -119,7 +119,6 @@ def community_assets_view(request):
     assets = (
         Asset.objects.filter(pk__in=Subquery(public_asset_ids))
         .select_related("user")
-        .distinct()
     )
     return render(
         request,
