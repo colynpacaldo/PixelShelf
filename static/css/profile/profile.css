@@ -1,3 +1,82 @@
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f9fafb;
+    color: #111827;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+body.dark-mode {
+    background: #0f172a;
+    color: #e5e7eb;
+}
+
+body.dark-mode .topbar {
+    background: #020817;
+}
+
+body.dark-mode .brand {
+    color: #fff;
+}
+
+body.dark-mode .nav-links a {
+    color: #c4b5fd;
+}
+
+body.dark-mode .nav-links a:hover,
+body.dark-mode .nav-links a.active {
+    color: #fff;
+}
+
+body.dark-mode .info {
+    background: #14532d;
+    color: #dcfce7;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    background: #111827;
+    color: #fff;
+}
+
+.brand {
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.nav-links a {
+    margin-left: 1.25rem;
+    color: #e5e7eb;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.content {
+    max-width: 880px;
+    margin: 3rem auto;
+    padding: 0 1.5rem 4rem;
+}
+
+.info {
+    margin-bottom: 1rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 8px;
+    background: #dcfce7;
+    color: #166534;
+    font-size: 0.85rem;
+}
+
 .profile-content {
     max-width: 880px;
 }
@@ -331,6 +410,10 @@ body.dark-mode .profile-edit .primary-btn:hover {
 }
 
 @media (max-width: 640px) {
+    .topbar {
+        padding: 0.85rem 1.1rem;
+    }
+
     .profile-page-header {
         align-items: stretch;
         flex-direction: column;
@@ -346,5 +429,10 @@ body.dark-mode .profile-edit .primary-btn:hover {
 
     .profile-edit .primary-btn {
         width: 100%;
+    }
+
+    .content {
+        margin: 1.5rem auto;
+        padding: 0 1rem 3rem;
     }
 }
