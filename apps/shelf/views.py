@@ -105,7 +105,6 @@ def community_view(request):
         {
             "shelves": shelves,
             "query": query,
-            "generated_sql": str(shelves.query),
         },
     )
 
@@ -125,6 +124,5 @@ def community_assets_view(request):
         "shelf/community_assets.html",
         {
             "assets": assets,
-            "generated_sql": str(assets.query),
         },
     )

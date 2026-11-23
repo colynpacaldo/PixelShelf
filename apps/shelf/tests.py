@@ -69,10 +69,8 @@ class CommunityQueryTests(TestCase):
         self.assertContains(response, "Public Collection")
         self.assertContains(response, "asset-owner")
         self.assertNotContains(response, "Private Collection")
-        self.assertIn("JOIN", response.context["generated_sql"].upper())
-        self.assertContains(
-            response, reverse("shelf:community_assets")
-        )
+        self.assertNotContains(response, "Browse assets in public shelves")
+        self.assertNotContains(response, "Show generated JOIN SQL")
 
     def test_community_assets_subquery_includes_only_assets_on_public_shelves(self):
         response = self.client.get(reverse("shelf:community_assets"))
@@ -81,6 +79,4 @@ class CommunityQueryTests(TestCase):
         self.assertContains(response, "Shared Pixel")
         self.assertContains(response, "asset-owner")
         self.assertNotContains(response, "Private Pixel")
-        generated_sql = response.context["generated_sql"].upper()
-        self.assertIn(" IN (", generated_sql)
-        self.assertIn("SELECT", generated_sql)
+        self.assertNotContains(response, "Show generated SUBQUERY SQL")

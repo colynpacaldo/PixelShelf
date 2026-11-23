@@ -28,8 +28,6 @@
             <h1>Community</h1>
         </div>
 
-        <p><a class="secondary-btn-inline" href="{% url 'shelf:community_assets' %}">Browse assets in public shelves</a></p>
-
         <form method="get" class="community-search">
             <input type="text" name="q" value="{{ query }}" placeholder="Search shelves or creators">
             <button type="submit" class="secondary-btn-inline">Search</button>
@@ -59,10 +57,6 @@
             <p class="empty-hint">{% if query %}No public shelves match "{{ query }}".{% else %}No public shelves yet. Make one of yours public to start the community!{% endif %}</p>
         {% endif %}
 
-        <details style="margin-top:2rem;">
-            <summary>Show generated JOIN SQL</summary>
-            <pre style="white-space:pre-wrap; background:#111827; color:#f8fafc; padding:1rem; border-radius:8px;">{{ generated_sql }}</pre>
-        </details>
     </main>
     <script src="{% static 'js/common/nav.js' %}"></script>
 </body>
