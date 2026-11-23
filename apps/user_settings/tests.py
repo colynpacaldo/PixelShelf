@@ -6,6 +6,29 @@ from apps.user_settings.models import UserSettings
 
 
 class UserSettingsDarkModeTests(TestCase):
+    def test_new_settings_default_to_medium_text_size(self):
+        user = get_user_model().objects.create_user(username="text-size-default")
+
+        user_settings = UserSettings.objects.create(user=user)
+
+        self.assertEqual(user_settings.text_size, "medium")
+
+    def test_settings_page_saves_large_text_size(self):
+        user = get_user_model().objects.create_user(username="text-size-user")
+        self.client.force_login(user)
+
+        response = self.client.post(
+            reverse("user_settings:settings"),
+            {
+                "dark_mode": "on",
+                "text_size": "large",
+                "email_notifications": "on",
+            },
+        )
+
+        self.assertRedirects(response, reverse("user_settings:settings"))
+        self.assertEqual(UserSettings.objects.get(user=user).text_size, "large")
+
     def test_new_settings_default_to_dark_mode(self):
         user = get_user_model().objects.create_user(username="default-mode")
 

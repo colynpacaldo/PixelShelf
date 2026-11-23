@@ -401,10 +401,26 @@ body.dark-mode .confirm-thumb {
 }
 .confirm-actions {
     display: flex;
+    align-items: stretch;
     gap: 0.6rem;
     margin-top: 1rem;
 }
-.confirm-actions .danger-btn { width: auto; flex: 1; }
+.confirm-actions .secondary-btn-inline,
+.confirm-actions .danger-btn {
+    flex: 1;
+    min-height: 44px;
+}
+.confirm-actions .secondary-btn-inline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    text-align: center;
+}
+.confirm-actions .danger-btn {
+    width: auto;
+    margin: 0;
+}
 
 /* ============================================================ */
 /* Sprite Animator — the signature feature                      */
