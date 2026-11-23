@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError, transaction
 from django.shortcuts import render, redirect
 
+from apps.user_settings.models import UserSettings
+
 
 def register_view(request):
     """Create a new user account. Owned entirely by the Register feature."""
@@ -34,7 +36,8 @@ def register_view(request):
         # user sees a friendly message instead of a server error.
         try:
             with transaction.atomic():
-                User.objects.create_user(username=username, password=password)
+                user = User.objects.create_user(username=username, password=password)
+                UserSettings.objects.create(user=user, dark_mode=True)
         except IntegrityError:
             return render(request, "register/register.html", {
                 "error": "Username already exists.",
