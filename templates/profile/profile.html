@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
+    <title>Your Profile · PixelShelf</title>
     <link rel="stylesheet" href="{% static 'css/common/base.css' %}">
     <link rel="stylesheet" href="{% static 'css/profile/profile.css' %}">
 </head>
@@ -23,8 +23,14 @@
         </div>
     </nav>
 
-    <main class="content">
-        <h1>Your Profile</h1>
+    <main class="content profile-content">
+        <header class="profile-page-header">
+            <div>
+                <h1>Your Profile</h1>
+                <p class="profile-subtitle">Manage your creator profile and public details.</p>
+            </div>
+            <a class="secondary-btn-inline" href="{% url 'profile:public' request.user.username %}">View Public Profile</a>
+        </header>
 
         {% if messages %}
             {% for message in messages %}
@@ -32,28 +38,56 @@
             {% endfor %}
         {% endif %}
 
-        <div class="profile-card">
-            {% if profile.profile_image %}
-                <img id="profile-preview" class="avatar" src="{{ profile.profile_image.url }}" alt="Profile picture">
-            {% else %}
-                <img id="profile-preview" class="avatar" src="{% static 'images/profile/default-avatar.png' %}" alt="Default profile picture">
-            {% endif %}
+        <form class="profile-layout" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <section class="profile-card profile-summary" aria-label="Profile summary">
+                {% if profile.profile_image %}
+                    <img id="profile-preview" class="avatar" src="{{ profile.profile_image.url }}" data-default-src="{% static 'images/profile/default-avatar.png' %}" alt="Profile picture">
+                {% else %}
+                    <img id="profile-preview" class="avatar" src="{% static 'images/profile/default-avatar.png' %}" data-default-src="{% static 'images/profile/default-avatar.png' %}" alt="Default profile picture">
+                {% endif %}
 
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
+                <div class="avatar-controls">
+                    {{ form.profile_image }}
+                    <label class="secondary-btn-inline change-photo" for="{{ form.profile_image.id_for_label }}">Change Photo</label>
+                    {% if profile.profile_image %}
+                        <button class="remove-photo" type="button" id="remove-profile-image">Remove</button>
+                    {% endif %}
+                    <input type="checkbox" name="remove_profile_image" id="remove_profile_image" class="visually-hidden">
+                    {% for error in form.profile_image.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                </div>
+
+                <div class="profile-identity">
+                    <h2>{{ profile.full_name|default:request.user.username }}</h2>
+                    <p>@{{ request.user.username }}</p>
+                </div>
+
+                <div class="profile-stats">
+                    <div class="profile-stat">
+                        <span class="stat-number">{{ asset_count }}</span>
+                        <span class="stat-label">Asset{{ asset_count|pluralize }}</span>
+                    </div>
+                    <div class="profile-stat">
+                        <span class="stat-number">{{ shelf_count }}</span>
+                        <span class="stat-label">Shel{{ shelf_count|pluralize:"f,ves" }}</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="profile-card profile-edit" aria-label="Edit profile details">
+                <h2>Edit Details</h2>
                 <label for="{{ form.full_name.id_for_label }}">Full name</label>
                 {{ form.full_name }}
+                {% for error in form.full_name.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
 
                 <label for="{{ form.bio.id_for_label }}">Bio</label>
                 {{ form.bio }}
-
-                <label for="{{ form.profile_image.id_for_label }}">Profile image</label>
-                {{ form.profile_image }}
+                {% for error in form.bio.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                <p class="bio-counter" id="bio-counter" aria-live="polite">0 / 200</p>
 
                 <button type="submit" class="primary-btn">Save Profile</button>
-            </form>
-            <p><a href="{% url 'profile:public' request.user.username %}">View my public profile</a></p>
-        </div>
+            </section>
+        </form>
     </main>
 
     <script src="{% static 'js/profile/profile.js' %}"></script>
